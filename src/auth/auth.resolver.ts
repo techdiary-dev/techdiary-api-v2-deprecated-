@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
 import {
   AdminRegisterDTO,
@@ -11,7 +11,6 @@ import {
 import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from './decorators/auth.decorator';
 import { User } from 'src/users/users.model';
-import { UseFilters, Req } from '@nestjs/common';
 import { MongoExceptionFilter } from 'src/utils/app-exception.filter';
 
 @Resolver()
@@ -35,7 +34,7 @@ export class AuthResolver {
 
   @Mutation(() => String)
   @Auth(AUTH_DOMAIN.ADMIN)
-  async adminLogout(@Req() req: SessionRequest): Promise<any> {
+  async adminLogout(@Context('req') req: SessionRequest): Promise<any> {
     const dd = await this.authService.logoutAdmin(req.user);
     return dd.message;
   }

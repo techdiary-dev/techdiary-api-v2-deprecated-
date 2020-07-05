@@ -1,4 +1,4 @@
-import { prop, plugin, arrayProp } from '@typegoose/typegoose';
+import { prop, plugin } from '@typegoose/typegoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import { Permissions } from './role.type';
 
@@ -7,8 +7,8 @@ export class Role {
   @prop({ required: true, unique: true })
   name: string;
 
-  @arrayProp({
-    items: String,
+  @prop({
+    type: String,
     enum: Object.values(Permissions),
     required: true,
   })

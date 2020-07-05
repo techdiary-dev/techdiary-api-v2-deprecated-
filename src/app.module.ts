@@ -20,6 +20,9 @@ const config: ConfigService = new ConfigService();
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'techdiary.gql',
+      context: allre => {
+        return { req: allre.req };
+      },
     }),
     //-------------
     ConfigModule.forRoot({ isGlobal: true }),
