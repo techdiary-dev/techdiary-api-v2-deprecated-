@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AdminModule } from 'src/admin/admin.module';
 import { SessionModule } from 'src/session/session.module';
-import { AuthController } from './auth.controller';
 import { RoleModule } from 'src/role/role.module';
 import { UsersModule } from 'src/users/users.module';
 import { PassportModule } from '@nestjs/passport';
@@ -29,6 +28,5 @@ import { AuthResolver } from './auth.resolver';
   ],
   providers: [AuthResolver, AuthService, JWTStrategy, FacebookStategy],
   exports: [AuthService],
-  controllers: [AuthController],
 })
 export class AuthModule {}

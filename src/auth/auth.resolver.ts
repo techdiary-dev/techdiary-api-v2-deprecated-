@@ -1,21 +1,19 @@
 import { AuthService } from './auth.service';
 import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
-import {
-  AdminRegisterDTO,
-  LoginDTO,
-  AuthPayload,
-  UserRegisterDTO,
-  UserLoginDTO,
-} from './auth.dto';
+import { AdminRegisterDTO, LoginDTO, AuthPayload } from './auth.input';
 import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from './decorators/auth.decorator';
-import { User } from 'src/users/users.model';
-import { MongoExceptionFilter } from 'src/utils/app-exception.filter';
+import AppContext from 'src/shared/types';
+import { User } from 'src/users/users.type';
+import { SessionService } from 'src/session/session.service';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly sessionService: SessionService,
+  ) {}
 
   @Query(() => String)
   test(): string {
@@ -37,6 +35,22 @@ export class AuthResolver {
   async adminLogout(@Context('req') req: SessionRequest): Promise<any> {
     const dd = await this.authService.logoutAdmin(req.user);
     return dd.message;
+  }
+
+  @Mutation(() => AuthPayload)
+  async login(@Args('oAuthCode') code: string): Promise<AuthPayload> {
+    return this.authService.loginUser(code);
+  }
+
+  @Auth(AUTH_DOMAIN.USER)
+  @Mutation(() => String)
+  logout(@Context() ctx: AppContext): Promise<string> {
+    return this.authService.logoutUser(ctx.req.user);
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Context() ctx: AppContext): Promise<User> {
+    return this.authService.getUser(ctx);
   }
 
   //   @Mutation(() => User)

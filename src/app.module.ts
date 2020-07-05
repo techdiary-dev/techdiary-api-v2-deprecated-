@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 
 import { RoleModule } from './role/role.module';
 import { UsersModule } from './users/users.module';
+import { ArticleModule } from './article/article.module';
 
 const config: ConfigService = new ConfigService();
 
@@ -21,7 +22,7 @@ const config: ConfigService = new ConfigService();
       installSubscriptionHandlers: true,
       autoSchemaFile: 'techdiary.gql',
       context: allre => {
-        return { req: allre.req };
+        return { req: allre.req, res: allre.res };
       },
     }),
     //-------------
@@ -40,6 +41,7 @@ const config: ConfigService = new ConfigService();
     AuthModule,
     RoleModule,
     UsersModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

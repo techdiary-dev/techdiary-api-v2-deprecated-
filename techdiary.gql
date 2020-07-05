@@ -9,18 +9,64 @@ type Admin {
   password: String!
 }
 
+type Link {
+  text: String!
+  url: String!
+}
+
+type User {
+  name: String!
+  username: String!
+  email: String
+  profilePhoto: String
+  githubUID: String!
+  education: String
+  designation: String
+  location: String
+  bio: String
+  links: [Link!]
+  skills: [String!]
+}
+
 type AuthPayload {
+  domain: AUTH_DOMAIN!
   token: String!
+}
+
+enum AUTH_DOMAIN {
+  ADMIN
+  USER
+}
+
+type Article {
+  _id: ID!
+  title: String!
+  slug: String!
+  excerpt: String!
+  body: String!
+  isPublished: Boolean!
+  isPinned: Boolean
+  thumbnail: String
+  tags: [String!]
+  author: User
+  createdAt: String!
+  updatedAt: String!
+  series: [Article!]
+  seriesName: String
+  url: String!
 }
 
 type Query {
   test: String!
+  me: User
 }
 
 type Mutation {
   registerAdmin(data: AdminRegisterDTO!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
   adminLogout: String!
+  login(oAuthCode: String!): AuthPayload!
+  logout: String!
 }
 
 input AdminRegisterDTO {

@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { CreateRoleDTO } from './role.dto';
 import { Role } from './role.model';
 import { store, index, show } from 'quick-crud';
-import { ResourceList, PaginationQueryDTO } from 'src/shared/types';
+import { ResourceList, PaginationInput } from 'src/shared/types';
 import { Permissions } from './role.type';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class RoleService {
   ) {}
 
   async roleList(
-    query: PaginationQueryDTO,
+    query: PaginationInput,
   ): Promise<ResourceList<DocumentType<Role>>> {
     return index({ model: this.model, paginationOptions: query });
   }
