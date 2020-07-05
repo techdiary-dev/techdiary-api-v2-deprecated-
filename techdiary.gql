@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Admin {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+}
+
+type Query {
+  test: String!
+}
+
+type Mutation {
+  registerAdmin(data: AdminRegisterDTO!): Admin!
+  loginAdmin(data: LoginDTO!): AuthPayload!
+  adminLogout: String!
+}
+
+input AdminRegisterDTO {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+}
+
+input LoginDTO {
+  identifier: String!
+  password: String!
+}
