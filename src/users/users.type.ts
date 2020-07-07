@@ -1,5 +1,6 @@
 import { prop } from '@typegoose/typegoose';
 import { ObjectType, Field } from '@nestjs/graphql';
+import { ArticlePayload } from 'src/article/article.input';
 
 @ObjectType()
 export class Link {
@@ -76,4 +77,7 @@ export class User {
   @Field(() => [String], { nullable: true })
   @prop()
   public skills?: string[];
+
+  @Field(() => ArticlePayload, { nullable: true })
+  articles?: ArticlePayload;
 }

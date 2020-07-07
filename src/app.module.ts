@@ -21,6 +21,7 @@ const config: ConfigService = new ConfigService();
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'techdiary.gql',
+      path: '/',
       context: allre => {
         return { req: allre.req, res: allre.res };
       },

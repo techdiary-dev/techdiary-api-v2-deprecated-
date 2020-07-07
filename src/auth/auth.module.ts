@@ -8,8 +8,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JWTStrategy } from './passport-strategies/jwt.strategy';
-import { FacebookStategy } from './passport-strategies/facebook.strategy';
 import { AuthResolver } from './auth.resolver';
+import { ArticleModule } from 'src/article/article.module';
 
 @Module({
   imports: [
@@ -25,8 +25,9 @@ import { AuthResolver } from './auth.resolver';
     SessionModule,
     RoleModule,
     PassportModule,
+    ArticleModule,
   ],
-  providers: [AuthResolver, AuthService, JWTStrategy, FacebookStategy],
+  providers: [AuthResolver, AuthService, JWTStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

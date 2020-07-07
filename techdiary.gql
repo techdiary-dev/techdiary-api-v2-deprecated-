@@ -42,7 +42,7 @@ type Article {
   _id: ID!
   title: String!
   slug: String!
-  excerpt: String!
+  excerpt(wordsCount: Float = 30): String!
   body: String!
   isPublished: Boolean!
   isPinned: Boolean
@@ -56,9 +56,29 @@ type Article {
   url: String!
 }
 
+type ArticlePayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Article!]!
+}
+
 type Query {
   test: String!
   me: User
+  articles(pagination: PaginationInput): ArticlePayload!
+  article(idOrSlug: idOrSlugArg!): Article!
+}
+
+input PaginationInput {
+  limit: Int
+  sort: String
+  page: Int
+}
+
+input idOrSlugArg {
+  _id: ID
+  slug: String
 }
 
 type Mutation {
@@ -67,6 +87,9 @@ type Mutation {
   adminLogout: String!
   login(oAuthCode: String!): AuthPayload!
   logout: String!
+  createArticle(data: CreateArticleInput!): Article!
+  updateArtilce(data: updateArticleInput, _id: ID!): Article!
+  deleteArticle(_id: String!): Article!
 }
 
 input AdminRegisterDTO {
@@ -79,4 +102,22 @@ input AdminRegisterDTO {
 input LoginDTO {
   identifier: String!
   password: String!
+}
+
+input CreateArticleInput {
+  title: String
+  body: String
+  isPublished: Boolean!
+  thumbnail: String
+  tags: [String!]
+  seriesName: String
+}
+
+input updateArticleInput {
+  title: String
+  body: String
+  tags: [String!]
+  thumbnail: String
+  isPublished: Boolean
+  seriesName: String
 }

@@ -1,11 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Article } from './article.type';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
-import { idOrSlugArg, CreateArticleInput } from './article.input';
+import {
+  idOrSlugArg,
+  CreateArticleInput,
+  updateArticleInput,
+} from './article.input';
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 @Injectable()
@@ -21,11 +28,38 @@ export class ArticleService {
     return await this.model.findOne(idOrSlug);
   }
 
+  async getAuthorArticles(
+    authorId: Types.ObjectId,
+    paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return await index({
+      model: this.model,
+      paginationOptions,
+      where: { isPublished: true, author: authorId },
+    });
+  }
+
   async createArticle(
     data: CreateArticleInput,
-    authorId: string,
+    authorId: Types.ObjectId,
   ): Promise<DocumentType<Article>> {
     return this.model.create({ ...data, author: authorId });
+  }
+
+  async updateArticle(
+    data: updateArticleInput,
+    _id: Types.ObjectId,
+    authorId: Types.ObjectId,
+  ): Promise<DocumentType<Article>> {
+    const article = await this.model.findOne({ _id });
+
+    if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
+
+    // @ts-ignore
+    if (!article.author.equals(authorId))
+      throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
+
+    return this.model.findOneAndUpdate({ _id }, data, { new: true });
   }
 
   async getPublishedArticles(
@@ -38,10 +72,26 @@ export class ArticleService {
     });
   }
 
-  async findBySeriesName(
-    seriesName: string,
-    author: string,
-  ): Promise<Article[]> {
-    return this.model.find({ seriesName, author, isPublished: true });
+  async findSeriesArticles(article: Article): Promise<DocumentType<Article>[]> {
+    return this.model.find({
+      seriesName: article.seriesName,
+      author: article.author,
+      isPublished: true,
+    });
+  }
+
+  async deleteArticle(
+    _id: Types.ObjectId,
+    authorId: Types.ObjectId,
+  ): Promise<DocumentType<Article>> {
+    const article = await this.getArticleByIdOrSlug({ _id });
+
+    if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
+
+    // @ts-ignore
+    if (!article.author.equals(authorId))
+      throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
+
+    return this.model.findOneAndDelete({ _id });
   }
 }

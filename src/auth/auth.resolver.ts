@@ -1,18 +1,30 @@
 import { AuthService } from './auth.service';
-import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  Context,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
 import { AdminRegisterDTO, LoginDTO, AuthPayload } from './auth.input';
 import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from './decorators/auth.decorator';
-import AppContext from 'src/shared/types';
+import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { User } from 'src/users/users.type';
 import { SessionService } from 'src/session/session.service';
+import { ArticleService } from 'src/article/article.service';
+import { Types } from 'mongoose';
+import { Article } from 'src/article/article.type';
 
 @Resolver()
 export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
     private readonly sessionService: SessionService,
+    private readonly articleService: ArticleService,
   ) {}
 
   @Query(() => String)
@@ -53,14 +65,15 @@ export class AuthResolver {
     return this.authService.getUser(ctx);
   }
 
-  //   @Mutation(() => User)
-  //   @UseFilters(MongoExceptionFilter)
-  //   registerUser(@Args('data') data: UserRegisterDTO): Promise<User> {
-  //     return this.authService.registerUser(data);
-  //   }
-
-  //   @Mutation(() => AuthPayload)
-  //   loginUser(@Args() data: UserLoginDTO): Promise<AuthPayload> {
-  //     return this.authService.loginUser(data);
-  //   }
+  @ResolveField(() => User)
+  articles(
+    @Parent() author: User,
+    @Args('pagination') pagination: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return this.articleService.getAuthorArticles(
+      // @ts-ignore
+      Types.ObjectId(author._id),
+      pagination,
+    );
+  }
 }

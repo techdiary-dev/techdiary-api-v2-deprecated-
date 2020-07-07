@@ -1,10 +1,10 @@
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 
 export const slugify = (str: string, unique = false): string => {
   if (!str) return;
 
   let key = '';
-  if (unique) key = '-' + crypto.randomBytes(10).toString('hex');
+  if (unique) key = '-' + randomBytes(3).toString('hex');
   return (
     str
       .toLowerCase()

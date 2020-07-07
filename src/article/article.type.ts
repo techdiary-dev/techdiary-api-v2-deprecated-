@@ -27,7 +27,7 @@ import { slugify } from 'src/utils/slugify';
 })
 export class Article {
   @Field(() => ID)
-  _id: ObjectId;
+  _id?: ObjectId;
 
   @Field()
   @prop()
@@ -35,10 +35,10 @@ export class Article {
 
   @Field()
   @prop()
-  slug: string;
+  slug?: string;
 
   @Field()
-  excerpt: string;
+  excerpt?: string;
 
   @Field()
   @prop()
@@ -49,19 +49,19 @@ export class Article {
   isPublished: boolean;
 
   @Field({ nullable: true })
-  @prop()
-  isPinned: boolean;
+  @prop({ default: false })
+  isPinned?: boolean;
 
   @Field({ nullable: true })
   @prop()
-  thumbnail: string;
+  thumbnail?: string;
 
   @Field(() => [String], { nullable: true })
   @prop({ type: String })
   tags?: string[];
 
   @Field(() => User, { nullable: true })
-  @prop({ ref: 'User', autopopulate: true })
+  @prop({ ref: getName(User), autopopulate: true })
   author?: Ref<User>;
 
   @Field()
