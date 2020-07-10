@@ -8,7 +8,7 @@ import { AdminService } from '../admin/admin.service';
 import { SessionService } from 'src/session/session.service';
 import { Admin } from 'src/admin/admin.type';
 import { DocumentType } from '@typegoose/typegoose';
-import { AdminRegisterDTO, LoginDTO, AuthPayload } from './auth.input';
+import { LoginDTO, AuthPayload } from './auth.input';
 import { AUTH_DOMAIN, JWTPayload } from 'src/session/session.types';
 import { JwtService } from '@nestjs/jwt';
 import { RoleService } from 'src/role/role.service';
@@ -17,6 +17,9 @@ import axios from 'axios';
 import { Args } from '@nestjs/graphql';
 import { User } from 'src/users/users.type';
 import AppContext from 'src/shared/types';
+import { CreateAdminInput, UpdateAdminInput } from 'src/admin/admin.input';
+import { Types } from 'mongoose';
+import { UpdateUserInput } from 'src/users/users.input';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +32,7 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {}
 
-  async registerAdmin(data: AdminRegisterDTO): Promise<DocumentType<Admin>> {
+  async registerAdmin(data: CreateAdminInput): Promise<DocumentType<Admin>> {
     // 1. check if a there is already an admin
     const count = await this.adminService.count();
     if (count)
@@ -117,7 +120,7 @@ export class AuthService {
     }
   }
 
-  async getUser(ctx: AppContext): Promise<DocumentType<User>> {
+  async getMe(ctx: AppContext): Promise<DocumentType<User>> {
     if (!ctx.req.headers.authorization) return null;
 
     const token = await this.jwt.verifyAsync(
@@ -138,6 +141,18 @@ export class AuthService {
       }
       return this.usersService.getById(token.sub);
     }
+  }
+
+  async getUserProfile(username: string): Promise<DocumentType<User>> {
+    return this.usersService.getByUsername(username);
+  }
+
+  async updateAdmin(_id: Types.ObjectId, data: UpdateAdminInput) {
+    return this.adminService.update(_id, data);
+  }
+
+  async updateUser(_id: Types.ObjectId, data: UpdateUserInput) {
+    return this.usersService.update(_id, data);
   }
 
   async getGithubUserInfoByCode(code: string): Promise<any> {

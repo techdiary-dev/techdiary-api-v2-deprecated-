@@ -1,4 +1,6 @@
-# Tittle App Backend
+# Techdiary Backend V2
+
+**Staging Auth login:** https://techdiary-auth.now.sh/
 
 ## Installation
 
@@ -6,7 +8,7 @@
 $ npm install
 ```
 
-## Running the app
+## Running the backend
 
 ```bash
 # development
@@ -22,5 +24,5 @@ $ npm run start:prod
 ## API Documentation
 
 ```bash
-<APP_URL>/api
+<APP_URL>/graphql
 ```

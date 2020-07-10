@@ -9,35 +9,6 @@ type Admin {
   password: String!
 }
 
-type Link {
-  text: String!
-  url: String!
-}
-
-type User {
-  name: String!
-  username: String!
-  email: String
-  profilePhoto: String
-  githubUID: String!
-  education: String
-  designation: String
-  location: String
-  bio: String
-  links: [Link!]
-  skills: [String!]
-}
-
-type AuthPayload {
-  domain: AUTH_DOMAIN!
-  token: String!
-}
-
-enum AUTH_DOMAIN {
-  ADMIN
-  USER
-}
-
 type Article {
   _id: ID!
   title: String!
@@ -63,11 +34,24 @@ type ArticlePayload {
   data: [Article!]!
 }
 
-type Query {
-  test: String!
-  me: User
-  articles(pagination: PaginationInput): ArticlePayload!
-  article(idOrSlug: idOrSlugArg!): Article!
+type LinkType {
+  text: String!
+  url: String!
+}
+
+type User {
+  name: String!
+  username: String!
+  email: String
+  profilePhoto: String
+  githubUID: String!
+  education: String
+  designation: String
+  location: String
+  bio: String
+  links: [LinkType!]
+  skills: [String!]
+  articles(pagination: PaginationInput): ArticlePayload
 }
 
 input PaginationInput {
@@ -76,32 +60,43 @@ input PaginationInput {
   page: Int
 }
 
+type AuthPayload {
+  domain: AUTH_DOMAIN!
+  token: String!
+}
+
+enum AUTH_DOMAIN {
+  ADMIN
+  USER
+}
+
+input LinkInput {
+  text: String!
+  url: String!
+}
+
+type Query {
+  articles(pagination: PaginationInput): ArticlePayload!
+  article(idOrSlug: idOrSlugArg!): Article!
+  me: User
+  profile(username: String!): User!
+}
+
 input idOrSlugArg {
   _id: ID
   slug: String
 }
 
 type Mutation {
-  registerAdmin(data: AdminRegisterDTO!): Admin!
+  createArticle(data: CreateArticleInput!): Article!
+  updateArtilce(data: updateArticleInput, _id: ID!): Article!
+  deleteArticle(_id: String!): Article!
+  registerAdmin(data: CreateAdminInput!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
   adminLogout: String!
   login(oAuthCode: String!): AuthPayload!
   logout: String!
-  createArticle(data: CreateArticleInput!): Article!
-  updateArtilce(data: updateArticleInput, _id: ID!): Article!
-  deleteArticle(_id: String!): Article!
-}
-
-input AdminRegisterDTO {
-  name: String!
-  username: String!
-  email: String!
-  password: String!
-}
-
-input LoginDTO {
-  identifier: String!
-  password: String!
+  updateProfile(data: UpdateUserInput!): User!
 }
 
 input CreateArticleInput {
@@ -120,4 +115,37 @@ input updateArticleInput {
   thumbnail: String
   isPublished: Boolean
   seriesName: String
+}
+
+input CreateAdminInput {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+}
+
+input LoginDTO {
+  identifier: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  username: String
+  email: String
+  profilePhoto: String
+  education: String
+  designation: String
+  location: String
+  bio: String
+  links: [LinkInput!]
+  skills: [String!]
+  workInfo: [WorkInput!]
+}
+
+input WorkInput {
+  name: String!
+  designation: String!
+  startTime: String!
+  endTime: String!
 }

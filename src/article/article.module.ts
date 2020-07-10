@@ -7,5 +7,6 @@ import { ArticleResolver } from './article.resolver';
 @Module({
   imports: [TypegooseModule.forFeature([Article])],
   providers: [ArticleService, ArticleResolver],
+  exports: [ArticleService],
 })
 export class ArticleModule {}

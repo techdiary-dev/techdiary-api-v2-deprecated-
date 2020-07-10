@@ -1,8 +1,10 @@
-import { prop } from '@typegoose/typegoose';
-import { ObjectType, Field } from '@nestjs/graphql';
+import { prop, modelOptions, plugin } from '@typegoose/typegoose';
+import { ObjectType, Field, InputType } from '@nestjs/graphql';
 import { ArticlePayload } from 'src/article/article.input';
+import * as mongoosePopulate from 'mongoose-autopopulate';
 
-@ObjectType()
+@ObjectType('LinkType')
+@InputType('LinkInput')
 export class Link {
   @prop()
   @Field()
@@ -13,7 +15,8 @@ export class Link {
   public url: string;
 }
 
-@ObjectType()
+@ObjectType('WorkInfoType')
+@InputType('WorkInput')
 export class WorkInfo {
   @prop()
   @Field()
@@ -33,6 +36,7 @@ export class WorkInfo {
 }
 
 @ObjectType()
+@plugin(mongoosePopulate as any)
 export class User {
   @Field()
   @prop({ required: true })
@@ -71,11 +75,11 @@ export class User {
   public bio?: string;
 
   @Field(() => [Link], { nullable: true })
-  @prop({ type: Link })
+  @prop({ type: Link, _id: false })
   public links?: Link[];
 
   @Field(() => [String], { nullable: true })
-  @prop()
+  @prop({ type: String })
   public skills?: string[];
 
   @Field(() => ArticlePayload, { nullable: true })

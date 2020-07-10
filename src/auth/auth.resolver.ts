@@ -7,9 +7,10 @@ import {
   Context,
   ResolveField,
   Parent,
+  createUnionType,
 } from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
-import { AdminRegisterDTO, LoginDTO, AuthPayload } from './auth.input';
+import { LoginDTO, AuthPayload } from './auth.input';
 import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from './decorators/auth.decorator';
 import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
@@ -18,22 +19,24 @@ import { SessionService } from 'src/session/session.service';
 import { ArticleService } from 'src/article/article.service';
 import { Types } from 'mongoose';
 import { Article } from 'src/article/article.type';
+import { CreateAdminInput, UpdateAdminInput } from 'src/admin/admin.input';
+import { type } from 'os';
+import { UpdateUserInput } from 'src/users/users.input';
 
-@Resolver()
+@Resolver(() => AuthPayload)
 export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
-    private readonly sessionService: SessionService,
     private readonly articleService: ArticleService,
   ) {}
 
-  @Query(() => String)
-  test(): string {
-    return 'this.authService.registerAdmin(data)';
-  }
+  // @Query(() => String)
+  // test(): string {
+  //   return 'this.authService.registerAdmin(data)';
+  // }
 
   @Mutation(() => Admin)
-  async registerAdmin(@Args('data') data: AdminRegisterDTO): Promise<Admin> {
+  async registerAdmin(@Args('data') data: CreateAdminInput): Promise<Admin> {
     return this.authService.registerAdmin(data);
   }
 
@@ -62,18 +65,20 @@ export class AuthResolver {
 
   @Query(() => User, { nullable: true })
   async me(@Context() ctx: AppContext): Promise<User> {
-    return this.authService.getUser(ctx);
+    return this.authService.getMe(ctx);
   }
 
-  @ResolveField(() => User)
-  articles(
-    @Parent() author: User,
-    @Args('pagination') pagination: PaginationInput,
-  ): Promise<ResourceList<Article>> {
-    return this.articleService.getAuthorArticles(
-      // @ts-ignore
-      Types.ObjectId(author._id),
-      pagination,
-    );
+  @Query(() => User)
+  async profile(@Args('username') username: string) {
+    return this.authService.getUserProfile(username);
+  }
+
+  @Auth(AUTH_DOMAIN.USER)
+  @Mutation(() => User)
+  async updateProfile(
+    @Context() ctx: AppContext,
+    @Args('data') data: UpdateUserInput,
+  ) {
+    return this.authService.updateUser(Types.ObjectId(ctx.req.user.sub), data);
   }
 }

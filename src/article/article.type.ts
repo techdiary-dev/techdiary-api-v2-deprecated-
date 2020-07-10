@@ -1,13 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
-import {
-  prop,
-  modelOptions,
-  plugin,
-  pre,
-  Ref,
-  getName,
-} from '@typegoose/typegoose';
+import { prop, modelOptions, plugin, pre, Ref } from '@typegoose/typegoose';
 import { User } from 'src/users/users.type';
 import * as mongoosePopulate from 'mongoose-autopopulate';
 import { slugify } from 'src/utils/slugify';
@@ -61,7 +54,7 @@ export class Article {
   tags?: string[];
 
   @Field(() => User, { nullable: true })
-  @prop({ ref: getName(User), autopopulate: true })
+  @prop({ ref: 'User', autopopulate: true })
   author?: Ref<User>;
 
   @Field()

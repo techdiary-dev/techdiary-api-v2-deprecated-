@@ -1,31 +1,32 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { Link, WorkInfo } from './users.type';
+
+// @InputType()
+// export class LinksInput {
+//   @Field({ nullable: true })
+//   text?: string;
+
+//   @Field({ nullable: true })
+//   link?: string;
+// }
+
+// @InputType()
+// export class WorkInfoInput {
+//   @Field()
+//   name: string;
+
+//   @Field()
+//   designation: string;
+
+//   @Field()
+//   startTime: string;
+
+//   @Field({ nullable: true })
+//   endTime?: string;
+// }
 
 @InputType()
-export class LinksInput {
-  @Field({ nullable: true })
-  text?: string;
-
-  @Field({ nullable: true })
-  link?: string;
-}
-
-@InputType()
-export class WorkInfoInput {
-  @Field()
-  name: string;
-
-  @Field()
-  designation: string;
-
-  @Field()
-  startTime: string;
-
-  @Field({ nullable: true })
-  endTime?: string;
-}
-
-@InputType()
-export class UpdateProfileInput {
+export class UpdateUserInput {
   @Field({ nullable: true })
   name?: string;
 
@@ -50,12 +51,12 @@ export class UpdateProfileInput {
   @Field({ nullable: true })
   bio?: string;
 
-  @Field(() => [LinksInput], { nullable: true })
-  links?: LinksInput[];
+  @Field(() => [Link], { nullable: true })
+  links?: Link[];
 
   @Field(() => [String], { nullable: true })
   skills?: string[];
 
-  @Field(() => [WorkInfoInput], { nullable: true })
-  workInfo?: WorkInfoInput[];
+  @Field(() => [WorkInfo], { nullable: true })
+  workInfo?: WorkInfo[];
 }

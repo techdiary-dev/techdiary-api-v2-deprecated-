@@ -36,6 +36,7 @@ const config: ConfigService = new ConfigService();
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: true,
     }),
     AdminModule,
     SessionModule,

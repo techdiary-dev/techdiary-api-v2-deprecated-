@@ -4,9 +4,11 @@ import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { User } from './users.type';
 // import { RoleService } from 'src/role/role.service';
 import { CreateUserDTO } from './users.dto';
+import { Types } from 'mongoose';
 // import { store, show, index } from 'quick-crud';
 // import { ResourceList, PaginationQueryDTO } from 'src/shared/types';
 // import { RoleService } from 'src/role/role.service';
+import { UpdateUserInput } from './users.input';
 
 @Injectable()
 export class UsersService {
@@ -41,14 +43,20 @@ export class UsersService {
     return this.model.findOne({ _id });
   }
 
-  // async getByUsername(username: string): Promise<DocumentType<User>> {
-  //   return this.model.findOne({ username });
-  // }
+  async getByUsername(username: string): Promise<DocumentType<User>> {
+    return this.model.findOne({ username });
+  }
 
   // async getByEmail(email: string): Promise<User> {
   //   return this.model.findOne({ email });
   // }
-
+  async update(
+    _id: Types.ObjectId,
+    data: UpdateUserInput,
+  ): Promise<DocumentType<User>> {
+    console.log('userserviceUpdate', data);
+    return this.model.findOneAndUpdate({ _id }, data, { new: true });
+  }
   async getByGithubUID(code: string): Promise<DocumentType<User>> {
     return this.model.findOne({ githubUID: code });
   }

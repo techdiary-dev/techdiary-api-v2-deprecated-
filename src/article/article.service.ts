@@ -31,11 +31,14 @@ export class ArticleService {
   async getAuthorArticles(
     authorId: Types.ObjectId,
     paginationOptions: PaginationInput,
+    isPublished?: boolean,
   ): Promise<ResourceList<Article>> {
+    const filtered: {author: Types.ObjectId, isPublished?: boolean} = { author: authorId };
+    if (isPublished) filtered.isPublished = isPublished;
     return await index({
       model: this.model,
       paginationOptions,
-      where: { isPublished: true, author: authorId },
+      where: { ...filtered },
     });
   }
 

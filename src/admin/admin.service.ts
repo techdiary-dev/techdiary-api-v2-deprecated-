@@ -3,7 +3,8 @@ import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { store, show } from 'quick-crud';
 import { Admin } from './admin.type';
-import { CreateAdminDTO } from './admin.dto';
+import { CreateAdminInput, UpdateAdminInput } from './admin.input';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AdminService {
@@ -16,7 +17,7 @@ export class AdminService {
    * Create an admin
    * @param data CreateAdminDTO
    */
-  async create(data: CreateAdminDTO): Promise<DocumentType<Admin>> {
+  async create(data: CreateAdminInput): Promise<DocumentType<Admin>> {
     return store({ model: this.model, data });
   }
 
@@ -55,6 +56,13 @@ export class AdminService {
     });
 
     return admin;
+  }
+
+  async update(
+    _id: Types.ObjectId,
+    data: UpdateAdminInput,
+  ): Promise<DocumentType<Admin>> {
+    return this.model.findOneAndUpdate({ _id }, { ...data }, { new: true });
   }
 
   /**
