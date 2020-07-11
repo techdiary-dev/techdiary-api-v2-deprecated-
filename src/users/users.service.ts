@@ -44,12 +44,12 @@ export class UsersService {
   }
 
   async getByUsername(username: string): Promise<DocumentType<User>> {
-    return this.model.findOne({ username });
+    return this.model.findOne({
+      // source: https://stackoverflow.com/a/7101938/3705299
+      username: { $regex: new RegExp('^' + username.toLowerCase(), 'i') },
+    });
   }
 
-  // async getByEmail(email: string): Promise<User> {
-  //   return this.model.findOne({ email });
-  // }
   async update(
     _id: Types.ObjectId,
     data: UpdateUserInput,
