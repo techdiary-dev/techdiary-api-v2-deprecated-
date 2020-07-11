@@ -105,8 +105,8 @@ input idOrSlugArg {
 
 type Mutation {
   createArticle(data: CreateArticleInput!): Article!
-  updateArtilce(data: updateArticleInput, _id: ID!): Article!
-  deleteArticle(_id: String!): Article!
+  updateArticle(data: updateArticleInput, _id: ID!): Article!
+  deleteArticle(_id: ID!): Article!
   registerAdmin(data: CreateAdminInput!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
   adminLogout: String!

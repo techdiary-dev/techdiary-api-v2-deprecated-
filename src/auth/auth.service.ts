@@ -14,7 +14,6 @@ import { JwtService } from '@nestjs/jwt';
 import { RoleService } from 'src/role/role.service';
 import { UsersService } from 'src/users/users.service';
 import axios from 'axios';
-import { Args } from '@nestjs/graphql';
 import { User } from 'src/users/users.type';
 import AppContext from 'src/shared/types';
 import { CreateAdminInput, UpdateAdminInput } from 'src/admin/admin.input';
@@ -81,7 +80,7 @@ export class AuthService {
     }
   }
 
-  async loginUser(@Args('oAuthCode') code: string): Promise<AuthPayload> {
+  async loginUser(code: string): Promise<AuthPayload> {
     const {
       id: githubUID,
       login: username,
@@ -121,11 +120,9 @@ export class AuthService {
   }
 
   async getMe(ctx: AppContext): Promise<DocumentType<User>> {
-    if (!ctx.req.headers.authorization) return null;
+    if (!ctx.req.cookies?.token) return null;
 
-    const token = await this.jwt.verifyAsync(
-      ctx.req.headers.authorization.replace('Bearer ', ''),
-    );
+    const token = await this.jwt.verifyAsync(ctx.req.cookies?.token);
 
     if (!token) return null;
     else {

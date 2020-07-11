@@ -6,6 +6,7 @@ import {
   Context,
   ResolveField,
   Parent,
+  ID,
 } from '@nestjs/graphql';
 import { Article } from './article.type';
 import {
@@ -50,7 +51,7 @@ export class ArticleResolver {
 
   @Mutation(() => Article)
   @Auth()
-  updateArtilce(
+  updateArticle(
     @Args() { data, _id }: updateArticleArgs,
     @Context() ctx: AppContext,
   ): Promise<Article> {
@@ -64,7 +65,7 @@ export class ArticleResolver {
   @Mutation(() => Article)
   @Auth()
   deleteArticle(
-    @Args('_id') _id: string,
+    @Args('_id', { type: () => ID }) _id: string,
     @Context() ctx: AppContext,
   ): Promise<Article> {
     return this.articleService.deleteArticle(

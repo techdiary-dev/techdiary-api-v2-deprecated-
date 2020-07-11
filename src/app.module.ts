@@ -28,6 +28,10 @@ const config: ConfigService = new ConfigService();
       engine: {
         reportSchema: true,
       },
+      // cors: {
+      //   credentials: true,
+      //   origin: config.get('CLIENT_URL'),
+      // },
       cors: false,
     }),
     //-------------
@@ -49,7 +53,5 @@ const config: ConfigService = new ConfigService();
     UsersModule,
     ArticleModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

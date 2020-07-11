@@ -53,18 +53,29 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthPayload)
-  async login(@Args('oAuthCode') code: string): Promise<AuthPayload> {
-    return this.authService.loginUser(code);
+  async login(
+    @Args('oAuthCode') code: string,
+    @Context() ctx: AppContext,
+  ): Promise<AuthPayload> {
+    const session = await this.authService.loginUser(code);
+    ctx.res.cookie('token', session.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
+    });
+    return session;
   }
 
   @Auth(AUTH_DOMAIN.USER)
   @Mutation(() => String)
   logout(@Context() ctx: AppContext): Promise<string> {
+    ctx.res.clearCookie('token');
     return this.authService.logoutUser(ctx.req.user);
   }
 
   @Query(() => User, { nullable: true })
   async me(@Context() ctx: AppContext): Promise<User> {
+    console.count(`token: ${ctx.req.cookies.token}`);
     return this.authService.getMe(ctx);
   }
 
