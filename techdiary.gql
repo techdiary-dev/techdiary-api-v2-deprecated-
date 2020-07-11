@@ -36,10 +36,18 @@ type ArticlePayload {
 
 type LinkType {
   text: String!
-  url: String!
+  link: String!
+}
+
+type WorkInfo {
+  name: String!
+  designation: String!
+  startTime: String!
+  endTime: String!
 }
 
 type User {
+  _id: ID!
   name: String!
   username: String!
   email: String
@@ -50,6 +58,7 @@ type User {
   location: String
   bio: String
   links: [LinkType!]
+  workInfo: [WorkInfo!]
   skills: [String!]
   articles(pagination: PaginationInput): ArticlePayload
 }
@@ -72,7 +81,14 @@ enum AUTH_DOMAIN {
 
 input LinkInput {
   text: String!
-  url: String!
+  link: String!
+}
+
+input WorkInfoInput {
+  name: String!
+  designation: String!
+  startTime: String!
+  endTime: String!
 }
 
 type Query {
@@ -140,12 +156,5 @@ input UpdateUserInput {
   bio: String
   links: [LinkInput!]
   skills: [String!]
-  workInfo: [WorkInput!]
-}
-
-input WorkInput {
-  name: String!
-  designation: String!
-  startTime: String!
-  endTime: String!
+  workInfo: [WorkInfoInput!]
 }

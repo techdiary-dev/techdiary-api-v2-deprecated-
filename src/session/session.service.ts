@@ -7,6 +7,7 @@ import { store } from 'quick-crud';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AUTH_DOMAIN, JWTPayload } from './session.types';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class SessionService {
@@ -23,7 +24,7 @@ export class SessionService {
    * @param domain Subscriber domain
    */
   async findOrCreateSession(
-    sub: string,
+    sub: Types.ObjectId,
     domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Session>> {
     const session = await this.model.findOne({ sub, domain });
@@ -41,7 +42,7 @@ export class SessionService {
    * @param domain Subscriber domain
    */
   async getSession(
-    sub: string,
+    sub: Types.ObjectId,
     domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Session>> {
     const session = await this.model.findOne({ sub, domain });
@@ -54,7 +55,7 @@ export class SessionService {
    * @param domain Subscriber domain
    */
   async createSession(
-    sub: string,
+    sub: Types.ObjectId,
     domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Session>> {
     const token = await this.generateToken(sub, domain);
@@ -70,7 +71,7 @@ export class SessionService {
    * @param sub Subscriber _id
    * @param domain Subscriber domain
    */
-  generateToken(sub: string, domain: AUTH_DOMAIN): Promise<string> {
+  generateToken(sub: Types.ObjectId, domain: AUTH_DOMAIN): Promise<string> {
     const payload: JWTPayload = {
       iss: this.config.get('APP_NAME'),
       sub,
@@ -85,7 +86,10 @@ export class SessionService {
    * @param sub Subscriber _id
    * @param domain Subscriber domain
    */
-  async deleteSession(sub: string, domain: AUTH_DOMAIN): Promise<boolean> {
+  async deleteSession(
+    sub: Types.ObjectId,
+    domain: AUTH_DOMAIN,
+  ): Promise<boolean> {
     const deleted = await this.model.findOneAndDelete({ sub, domain });
     if (!deleted) return false;
     return true;

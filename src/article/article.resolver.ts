@@ -45,10 +45,7 @@ export class ArticleResolver {
     @Args('data') data: CreateArticleInput,
     @Context() ctx: AppContext,
   ): Promise<Article> {
-    return this.articleService.createArticle(
-      data,
-      Types.ObjectId(ctx.req.user.sub),
-    );
+    return this.articleService.createArticle(data, ctx.req.user.sub);
   }
 
   @Mutation(() => Article)
@@ -60,7 +57,7 @@ export class ArticleResolver {
     return this.articleService.updateArticle(
       data,
       Types.ObjectId(_id),
-      Types.ObjectId(ctx.req.user.sub),
+      ctx.req.user.sub,
     );
   }
 
@@ -72,7 +69,7 @@ export class ArticleResolver {
   ): Promise<Article> {
     return this.articleService.deleteArticle(
       Types.ObjectId(_id),
-      Types.ObjectId(ctx.req.user.sub),
+      ctx.req.user.sub,
     );
   }
 

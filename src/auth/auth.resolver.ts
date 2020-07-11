@@ -79,6 +79,6 @@ export class AuthResolver {
     @Context() ctx: AppContext,
     @Args('data') data: UpdateUserInput,
   ) {
-    return this.authService.updateUser(Types.ObjectId(ctx.req.user.sub), data);
+    return this.authService.updateUser(ctx.req.user.sub, data);
   }
 }

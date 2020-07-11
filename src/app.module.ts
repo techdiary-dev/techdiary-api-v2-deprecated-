@@ -25,6 +25,10 @@ const config: ConfigService = new ConfigService();
       context: allre => {
         return { req: allre.req, res: allre.res };
       },
+      engine: {
+        reportSchema: true,
+      },
+      cors: false,
     }),
     //-------------
     ConfigModule.forRoot({ isGlobal: true }),
