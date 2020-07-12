@@ -20,17 +20,8 @@ export class UserResolver {
     @Info() info: GraphQLResolveInfo,
   ): Promise<ResourceList<Article>> {
     if (info.path.prev.key === 'me') {
-      return this.articleService.getAuthorArticles(
-        // @ts-ignore
-        Types.ObjectId(author._id),
-        pagination,
-      );
+      return this.articleService.getAuthorArticles(author._id, pagination);
     }
-    return this.articleService.getAuthorArticles(
-      // @ts-ignore
-      Types.ObjectId(author._id),
-      pagination,
-      true,
-    );
+    return this.articleService.getAuthorArticles(author._id, pagination, true);
   }
 }
