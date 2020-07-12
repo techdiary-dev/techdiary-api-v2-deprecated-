@@ -55,7 +55,6 @@ let AuthResolver = class AuthResolver {
         return this.authService.logoutUser(ctx.req.user);
     }
     async me(ctx) {
-        console.count(`token: ${ctx.req.cookies.token}`);
         return this.authService.getMe(ctx);
     }
     async profile(username) {

@@ -5411,7 +5411,7 @@
         "affectsGlobalScope": false
       },
       "../src/auth/auth.resolver.ts": {
-        "version": "f10b8044161067ef29109683ba40c0012b9168a7ad5a66d53e966f35da532d49",
+        "version": "7647e3e8c8780caa4ac1af65aa066205511b459d5e3d31d3199f9c812dd2814a",
         "signature": "b895555cde414e2a45d3aa8cd398fa57e0ed764520944a6f2ed1c3a9a7679e12",
         "affectsGlobalScope": false
       },

@@ -75,7 +75,6 @@ export class AuthResolver {
 
   @Query(() => User, { nullable: true })
   async me(@Context() ctx: AppContext): Promise<User> {
-    console.count(`token: ${ctx.req.cookies.token}`);
     return this.authService.getMe(ctx);
   }
 
