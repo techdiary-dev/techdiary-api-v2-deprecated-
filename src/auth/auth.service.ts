@@ -121,23 +121,23 @@ export class AuthService {
 
   async getMe(ctx: AppContext): Promise<DocumentType<User>> {
     if (!ctx.req.cookies?.token) return null;
-
     const token = await this.jwt.verifyAsync(ctx.req.cookies?.token);
-
     if (!token) return null;
-    else {
-      if (token.sub) {
-        const sessionExists = await this.sessionService.getSession(
-          token.sub,
-          AUTH_DOMAIN.USER,
-        );
-        if (sessionExists === null) {
-          ctx.res.clearCookie('token');
-          return null;
-        }
-      }
-      return this.usersService.getById(token.sub);
-    }
+
+    return this.usersService.getById(token.sub);
+    // else {
+    //   if (token.sub) {
+    //     const sessionExists = await this.sessionService.getSession(
+    //       token.sub,
+    //       AUTH_DOMAIN.USER,
+    //     );
+    //     if (sessionExists === null) {
+    //       // ctx.res.clearCookie('token');
+    //       return null;
+    //     }
+    //   }
+    //   return this.usersService.getById(token.sub);
+    // }
   }
 
   async getUserProfile(username: string): Promise<DocumentType<User>> {
