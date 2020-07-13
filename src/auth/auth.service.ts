@@ -120,9 +120,12 @@ export class AuthService {
   }
 
   async getMe(ctx: AppContext): Promise<DocumentType<User>> {
-    if (!ctx.req.cookies?.token) return null;
+    const cookieOrheader =
+      ctx.req.headers.authorization.replace('Bearer ', '') ||
+      ctx.req.cookies?.token;
+    if (!cookieOrheader) return null;
 
-    const token = await this.jwt.verifyAsync(ctx.req.cookies?.token);
+    const token = await this.jwt.verifyAsync(cookieOrheader);
 
     if (!token) return null;
     else {
