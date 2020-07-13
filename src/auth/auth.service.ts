@@ -122,7 +122,7 @@ export class AuthService {
   async getMe(ctx: AppContext): Promise<DocumentType<User>> {
     // get the token either from authorization headers or cookie
     const cookieOrheader =
-      ctx.req.headers.authorization.replace('Bearer ', '') ||
+      ctx.req.headers.authorization?.replace('Bearer ', '') ||
       ctx.req.cookies?.token;
     if (!cookieOrheader) return null;
 
