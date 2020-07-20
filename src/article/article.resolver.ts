@@ -40,6 +40,14 @@ export class ArticleResolver {
     return article;
   }
 
+  @Query(() => ArticlePayload)
+  async articlesByTag(
+    @Args('tag') tag: string,
+    @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
+  ) {
+    return this.articleService.ArticlesByTag(tag, paginationOptions);
+  }
+
   @Mutation(() => Article)
   @Auth()
   createArticle(

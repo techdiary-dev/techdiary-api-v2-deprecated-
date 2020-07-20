@@ -20,7 +20,6 @@ import { ArticleService } from 'src/article/article.service';
 import { Types } from 'mongoose';
 import { Article } from 'src/article/article.type';
 import { CreateAdminInput, UpdateAdminInput } from 'src/admin/admin.input';
-import { type } from 'os';
 import { UpdateUserInput } from 'src/users/users.input';
 
 @Resolver(() => AuthPayload)
@@ -75,7 +74,6 @@ export class AuthResolver {
 
   @Query(() => User, { nullable: true })
   async me(@Context() ctx: AppContext): Promise<User> {
-    console.count(`autorization token: ${ctx.req.headers.authorization}`);
     return this.authService.getMe(ctx);
   }
 

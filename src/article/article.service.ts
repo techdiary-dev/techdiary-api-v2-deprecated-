@@ -14,6 +14,7 @@ import {
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
 import { Types } from 'mongoose';
+import { PaginationOptions } from 'quick-crud/dist/utils/interfaces';
 
 @Injectable()
 export class ArticleService {
@@ -28,12 +29,25 @@ export class ArticleService {
     return await this.model.findOne(idOrSlug);
   }
 
+  async ArticlesByTag(
+    tag: string,
+    paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return await index({
+      model: this.model,
+      paginationOptions,
+      where: { tags: [{ $regex: new RegExp('^' + tag.toLowerCase(), 'i') }] },
+    });
+  }
+
   async getAuthorArticles(
     authorId: Types.ObjectId,
     paginationOptions: PaginationInput,
     isPublished?: boolean,
   ): Promise<ResourceList<Article>> {
-    const filtered: {author: Types.ObjectId, isPublished?: boolean} = { author: authorId };
+    const filtered: { author: Types.ObjectId; isPublished?: boolean } = {
+      author: authorId,
+    };
     if (isPublished) filtered.isPublished = isPublished;
     return await index({
       model: this.model,

@@ -94,6 +94,7 @@ input WorkInfoInput {
 type Query {
   articles(pagination: PaginationInput): ArticlePayload!
   article(idOrSlug: idOrSlugArg!): Article!
+  articlesByTag(pagination: PaginationInput, tag: String!): ArticlePayload!
   me: User
   profile(username: String!): User!
 }
