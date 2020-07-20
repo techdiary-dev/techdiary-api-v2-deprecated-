@@ -3,11 +3,12 @@ import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 
 import { Session } from './session.model';
-import { store } from 'quick-crud';
+import { store, index } from 'quick-crud';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AUTH_DOMAIN, JWTPayload } from './session.types';
 import { Types } from 'mongoose';
+import { PaginationInput, ResourceList } from 'src/shared/types';
 
 @Injectable()
 export class SessionService {
@@ -16,7 +17,7 @@ export class SessionService {
     private readonly model: ReturnModelType<typeof Session>,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   /**
    * Get session for any role
@@ -94,4 +95,15 @@ export class SessionService {
     if (!deleted) return false;
     return true;
   }
+
+  
+  /**
+   * Get All Session By Admin
+   * @param PaginationInput pagination
+   */
+  async getAllSession(pagination: PaginationInput): Promise<ResourceList<Session>> {
+
+    return await index({ model: this.model, paginationOptions: pagination })
+  }
+
 }
