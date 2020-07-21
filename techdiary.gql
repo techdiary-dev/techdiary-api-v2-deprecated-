@@ -9,6 +9,19 @@ type Admin {
   password: String!
 }
 
+type Session {
+  sub: ID!
+  domain: String!
+  token: String!
+}
+
+type SessionPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Session!]!
+}
+
 type Article {
   _id: ID!
   title: String!
@@ -92,6 +105,8 @@ input WorkInfoInput {
 }
 
 type Query {
+  sessions(pagination: PaginationInput): SessionPayload!
+  getAdmin: Admin
   articles(pagination: PaginationInput): ArticlePayload!
   article(idOrSlug: idOrSlugArg!): Article!
   me: User
@@ -104,6 +119,7 @@ input idOrSlugArg {
 }
 
 type Mutation {
+  removeSession(domain: String!, sub: String!): String!
   createArticle(data: CreateArticleInput!): Article!
   updateArticle(data: updateArticleInput, _id: ID!): Article!
   deleteArticle(_id: ID!): Article!

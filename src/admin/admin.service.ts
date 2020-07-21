@@ -1,17 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Type, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { store, show } from 'quick-crud';
 import { Admin } from './admin.type';
 import { CreateAdminInput, UpdateAdminInput } from './admin.input';
 import { Types } from 'mongoose';
+import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
+import { SessionService } from 'src/session/session.service';
+import { Session } from '../session/session.model';
+import { AUTH_DOMAIN } from 'src/session/session.types';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectModel(Admin)
     private readonly model: ReturnModelType<typeof Admin>,
-  ) {}
+    private readonly sessionService: SessionService,
+    private readonly jwt: JwtService
+  ) { }
 
   /**
    * Create an admin
@@ -72,4 +79,38 @@ export class AdminService {
   async count(): Promise<any> {
     return this.model.countDocuments({});
   }
+
+  /**
+   * Get All Session By Admin
+   * @param PaginationInput pagination
+   */
+
+  async getAllSession(query: PaginationInput): Promise<ResourceList<Session>> {
+
+    return this.sessionService.getAllSession(query)
+  }
+
+  /**
+   * Delete Session By Admin
+   * @param sub Subscriber _id
+   * @param domain Subscriber domain
+   */
+
+  async removeSession(sub: Types.ObjectId, domain: AUTH_DOMAIN): Promise<string> {
+
+    if (this.sessionService.deleteSession(sub, domain)) {
+      return 'You have remove session successfully';
+    } else {
+      throw new ForbiddenException(
+        'Invalid id or you have already  removed',
+      );
+    }
+
+  }
+
+  async getMe(ctx: AppContext): Promise<DocumentType<Admin>> {
+    //@ts-ignore
+    return this.getById(ctx.req.user.sub);
+  }
+
 }
