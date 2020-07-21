@@ -85,9 +85,9 @@ export class AdminService {
    * @param PaginationInput pagination
    */
 
-  async getAllSession(query: PaginationInput): Promise<ResourceList<Session>> {
+  async getAllSession(sub:Types.ObjectId,query: PaginationInput): Promise<ResourceList<Session>> {
 
-    return this.sessionService.getAllSession(query)
+    return this.sessionService.getAllSession(sub,query)
   }
 
   /**

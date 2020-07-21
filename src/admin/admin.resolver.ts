@@ -4,7 +4,7 @@ import { SessionPayload } from 'src/session/session.input';
 import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { Session } from '../session/session.model';
 import { Types } from 'mongoose';
-import { AUTH_DOMAIN } from 'src/session/session.types';
+import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Admin } from './admin.type';
 
@@ -14,12 +14,12 @@ import { Admin } from './admin.type';
 export class AdminResolver {
 
     constructor(private readonly adminService: AdminService) { }
- 
-       @Auth(AUTH_DOMAIN.ADMIN)
-       @Query(()=>SessionPayload)
-       async sessions(@Args('pagination', { nullable: true }) query: PaginationInput): Promise<ResourceList<Session>> {
-            return this.adminService.getAllSession(query)
-        }
+
+    @Auth(AUTH_DOMAIN.ADMIN)
+    @Query(() => SessionPayload)
+    async sessions(@Context('req') req: SessionRequest,@Args('pagination', { nullable: true }) query: PaginationInput): Promise<ResourceList<Session>> {
+        return this.adminService.getAllSession(req.user.sub,query)
+    }
 
     @Auth(AUTH_DOMAIN.ADMIN)
     @Mutation(() => String)

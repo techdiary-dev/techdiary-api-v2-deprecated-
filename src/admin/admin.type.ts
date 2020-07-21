@@ -2,7 +2,8 @@ import { prop, pre, plugin } from '@typegoose/typegoose';
 import { hashSync } from 'bcryptjs';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import { compare } from 'bcryptjs';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType,ID } from '@nestjs/graphql';
+import { Types } from 'mongoose';
 
 @plugin(uniqueValidator, { message: '{VALUE} already taken' })
 @pre<Admin>('save', function() {
@@ -10,6 +11,9 @@ import { Field, ObjectType } from '@nestjs/graphql';
 })
 @ObjectType()
 export class Admin {
+  @Field(() => ID)
+  public _id: Types.ObjectId;
+
   @Field()
   @prop({ required: true })
   name: string;

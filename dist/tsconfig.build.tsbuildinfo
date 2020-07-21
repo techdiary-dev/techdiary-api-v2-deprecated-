@@ -4401,8 +4401,8 @@
         "affectsGlobalScope": false
       },
       "../src/admin/admin.type.ts": {
-        "version": "1d906cd4ca2c06c401c52c72d3b775cbdaf342adb3697d012a86035b41d4aad7",
-        "signature": "a5607fc367a648937afa109bb74c5fe93c10582a58feaca53510abdc85c1e816",
+        "version": "173bd11857d90c8553bf4e355b6b20a90b645ee5f5f4e08fffd8d876ac9e6676",
+        "signature": "c4136242e2472a065023b3c30b88156ff02a4cf2cc14374d420f712e200ba073",
         "affectsGlobalScope": false
       },
       "../node_modules/class-validator/types/validation/validationerror.d.ts": {
@@ -5041,13 +5041,13 @@
         "affectsGlobalScope": false
       },
       "../src/session/session.service.ts": {
-        "version": "3262c75dc542afc20aa37f931dc77b1b308c1d61733d4bebc56a47c3c0128e40",
-        "signature": "6e6d5311e884ac8157d80a49770ba760cdd3e4a2903fdfa7ac261c3e4e60757f",
+        "version": "2f4850ba45aef2cb6babef302b06c41b48aa489f65c5e500ba76496e9d32af83",
+        "signature": "1e18adab6b18e166076c609e247d6b4767f8aef6522b425d909e5e6673d93d19",
         "affectsGlobalScope": false
       },
       "../src/admin/admin.service.ts": {
-        "version": "329472c5e8730e7e7f5deb331ac7e28adc59c553762398aae1243677d4dd9a9e",
-        "signature": "3c078f263e299234b341e10e41abc66f659a89d0bb7fb11ca087f02c522a5e36",
+        "version": "8d6b424de38cf43be95bdaf224c2bb17b507b463289ac9886bd8a24c7cb3c212",
+        "signature": "b3e2271ff554cb5b2cfed297fff3566b28a3199d8987306a17cbb5f7c1559d43",
         "affectsGlobalScope": false
       },
       "../src/session/session.input.ts": {
@@ -5306,8 +5306,8 @@
         "affectsGlobalScope": false
       },
       "../src/admin/admin.resolver.ts": {
-        "version": "d5e8a7b4a24123bea85f99a1afa09f54d4f70edc3952819aec2ed0ca7c7a8447",
-        "signature": "109a5864e1fc7901c0250da3da8d18d018b92350903e2b7f72d74240b2423269",
+        "version": "42cfe824c4df672e05bf4e48df8e5cda854ac151bc89eaa4f9ae7ee700373780",
+        "signature": "a392f027edc8379b727ad1b12b1930641443a7ca4c5590b619cf60a2c755eaa8",
         "affectsGlobalScope": false
       },
       "../src/session/session.module.ts": {
@@ -16077,6 +16077,7 @@
         "../node_modules/@typegoose/typegoose/lib/typegoose.d.ts",
         "../node_modules/@types/bcryptjs/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
@@ -26864,6 +26865,9 @@
         "../src/session/session.service.ts",
         "../src/session/session.types.ts",
         "../src/shared/types.ts"
+      ],
+      "../src/admin/admin.type.ts": [
+        "../node_modules/@types/mongoose/index.d.ts"
       ],
       "../src/app.controller.ts": [
         "../src/app.service.ts"
