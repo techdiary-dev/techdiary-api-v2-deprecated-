@@ -1,18 +1,20 @@
 import { prop } from '@typegoose/typegoose';
 import { AUTH_DOMAIN } from './session.types';
-import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
+
+@ObjectType()
 export class Session {
-  @ApiProperty()
+  @Field(()=>ID)
   @prop({ required: true })
   sub: Types.ObjectId;
 
-  @ApiProperty()
+  @Field()
   @prop({ required: true })
   domain: AUTH_DOMAIN;
 
-  @ApiProperty()
+  @Field()
   @prop({ required: true })
   token: string;
 }

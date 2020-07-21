@@ -120,28 +120,21 @@ export class AuthService {
   }
 
   async getMe(ctx: AppContext): Promise<DocumentType<User>> {
-    // get the token either from authorization headers or cookie
-    const cookieOrheader =
-      ctx.req.headers.authorization?.replace('Bearer ', '') ||
-      ctx.req.cookies?.token;
-    if (!cookieOrheader) return null;
-
-    const token = await this.jwt.verifyAsync(cookieOrheader);
-
+    if (!ctx.req.cookies?.token) return null;
+    const token = await this.jwt.verifyAsync(ctx.req.cookies?.token);
     if (!token) return null;
-    else {
-      if (token.sub) {
-        const sessionExists = await this.sessionService.getSession(
-          token.sub,
-          AUTH_DOMAIN.USER,
-        );
-        if (sessionExists === null) {
-          ctx.res.clearCookie('token');
-          return null;
-        }
+
+    if (token.sub) {
+      const sessionExists = await this.sessionService.getSession(
+        token.sub,
+        AUTH_DOMAIN.USER,
+      );
+      if (sessionExists === null) {
+        ctx.res.clearCookie('token');
+        return null;
       }
-      return this.usersService.getById(token.sub);
     }
+    return this.usersService.getById(token.sub);
   }
 
   async getUserProfile(username: string): Promise<DocumentType<User>> {

@@ -9,7 +9,13 @@ async function bootstrap() {
   app.useGlobalPipes(new AppValidationPipe());
   const config = app.get(ConfigService);
   app.use(CookieParser(config.get('JWT_SECRET')));
-  app.enableCors({ credentials: true, origin: config.get('CLIENT_URL') });
+  app.enableCors({
+    credentials: true,
+    origin: config
+      .get<string>('CLIENT_URL')
+      .split(',')
+      .map(url => url.trim()),
+  });
   const port = config.get<string>('PORT');
   await app.listen(port || 3000);
 

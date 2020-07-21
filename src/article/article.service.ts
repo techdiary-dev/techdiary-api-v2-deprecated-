@@ -14,7 +14,7 @@ import {
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
 import { Types } from 'mongoose';
-import { PaginationOptions } from 'quick-crud/dist/utils/interfaces';
+import { AUTH_DOMAIN } from 'src/session/session.types';
 
 @Injectable()
 export class ArticleService {
@@ -67,15 +67,16 @@ export class ArticleService {
     data: updateArticleInput,
     _id: Types.ObjectId,
     authorId: Types.ObjectId,
+    domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Article>> {
     const article = await this.model.findOne({ _id });
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
     // @ts-ignore
-    if (!article.author.equals(authorId))
+    if (!(domain === AUTH_DOMAIN.ADMIN || article.author.equals(authorId))) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
-
+    }
     return this.model.findOneAndUpdate({ _id }, data, { new: true });
   }
 
@@ -100,15 +101,16 @@ export class ArticleService {
   async deleteArticle(
     _id: Types.ObjectId,
     authorId: Types.ObjectId,
+    domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Article>> {
     const article = await this.getArticleByIdOrSlug({ _id });
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
-    // @ts-ignore
-    if (!article.author.equals(authorId))
+    //@ts-ignore
+    if (!(domain === AUTH_DOMAIN.ADMIN || article.author.equals(authorId))) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
-
+    }
     return this.model.findOneAndDelete({ _id });
   }
 }
