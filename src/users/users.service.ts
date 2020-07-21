@@ -5,17 +5,18 @@ import { User } from './users.type';
 // import { RoleService } from 'src/role/role.service';
 import { CreateUserDTO } from './users.dto';
 import { Types } from 'mongoose';
-// import { store, show, index } from 'quick-crud';
+import { index } from 'quick-crud';
 // import { ResourceList, PaginationQueryDTO } from 'src/shared/types';
 // import { RoleService } from 'src/role/role.service';
 import { UpdateUserInput } from './users.input';
+import { PaginationInput, ResourceList } from 'src/shared/types';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User)
     private readonly model: ReturnModelType<typeof User>, // private readonly roleService: RoleService,
-  ) {}
+  ) { }
 
   // async list(query: PaginationQueryDTO): Promise<ResourceList<User>> {
   //   return index({ model: this.model, paginationOptions: query });
@@ -39,7 +40,7 @@ export class UsersService {
     return user;
   }
 
-  async getById(_id: string): Promise<DocumentType<User>> {
+  async getById(_id: Types.ObjectId): Promise<DocumentType<User>> {
     return this.model.findOne({ _id });
   }
 
@@ -59,5 +60,10 @@ export class UsersService {
   }
   async getByGithubUID(code: string): Promise<DocumentType<User>> {
     return this.model.findOne({ githubUID: code });
+  }
+
+
+  async getAllUser(query: PaginationInput): Promise<ResourceList<User>> {
+    return index({ model: this.model, paginationOptions: query })
   }
 }

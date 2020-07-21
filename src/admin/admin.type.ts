@@ -2,13 +2,11 @@ import { prop, pre, plugin } from '@typegoose/typegoose';
 import { hashSync } from 'bcryptjs';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import { compare } from 'bcryptjs';
-import { Field, ObjectType,ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 
 @plugin(uniqueValidator, { message: '{VALUE} already taken' })
-  @pre<Admin>('save', function () {
-    console.log(`type ${hashSync(this.password)}`)
-    console.log(`type pass ${this.password}`)
+@pre<Admin>('save', function () {
   this.password = hashSync(this.password);
 })
 @ObjectType()

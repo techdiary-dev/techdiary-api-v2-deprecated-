@@ -8,6 +8,8 @@ import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Admin } from './admin.type';
 import { UpdatePasswordArgs, CreateAdminInput, UpdateAdminArgs } from './admin.input';
+import { UserPayload } from 'src/users/users.input';
+import { User } from 'src/users/users.type';
 
 
 
@@ -16,11 +18,13 @@ export class AdminResolver {
 
     constructor(private readonly adminService: AdminService) { }
 
+   
     @Auth(AUTH_DOMAIN.ADMIN)
-    @Query(() => SessionPayload)
-    async sessions(@Context('req') req: SessionRequest, @Args('pagination', { nullable: true }) query: PaginationInput): Promise<ResourceList<Session>> {
-        return this.adminService.getAllSession(req.user.sub, query)
+    @Query(() => UserPayload)
+    async getAllUsers(@Args('pagination', { nullable: true }) query: PaginationInput): Promise<ResourceList<User>> {
+        return this.adminService.getAllUsers(query)
     }
+
 
     @Auth(AUTH_DOMAIN.ADMIN)
     @Mutation(() => String)

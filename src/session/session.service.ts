@@ -17,7 +17,7 @@ export class SessionService {
     private readonly model: ReturnModelType<typeof Session>,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   /**
    * Get session for any role
@@ -96,14 +96,18 @@ export class SessionService {
     return true;
   }
 
-
   /**
    * Get All Session By Admin
    * @param PaginationInput pagination
    */
-  async getAllSession(sub: Types.ObjectId, pagination: PaginationInput): Promise<ResourceList<Session>> {
-    return await index({ model: this.model,where:{sub:{$ne:sub}}, paginationOptions: pagination })
+  async getAllSession(
+    sub: Types.ObjectId,
+    pagination: PaginationInput,
+  ): Promise<ResourceList<Session>> {
+    return await index({
+      model: this.model,
+      where: { sub: { $ne: sub } },
+      paginationOptions: pagination,
+    });
   }
-
 }
-

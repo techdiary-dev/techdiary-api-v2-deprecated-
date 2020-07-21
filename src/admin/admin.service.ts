@@ -11,6 +11,8 @@ import { Session } from '../session/session.model';
 import { AUTH_DOMAIN } from 'src/session/session.types';
 import { JwtService } from '@nestjs/jwt';
 import { hashSync } from 'bcryptjs';
+import { User } from 'src/users/users.type';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AdminService {
@@ -18,7 +20,8 @@ export class AdminService {
     @InjectModel(Admin)
     private readonly model: ReturnModelType<typeof Admin>,
     private readonly sessionService: SessionService,
-    private readonly jwt: JwtService
+    private readonly jwt: JwtService,
+    private readonly userService: UsersService
   ) { }
 
   /**
@@ -33,7 +36,7 @@ export class AdminService {
    * Get an admin via _id
    * @param _id admin doc objectId
    */
-  async getById(_id: string): Promise<Admin> {
+  async getById(_id: Types.ObjectId): Promise<Admin> {
     return show({ model: this.model, where: { _id } });
   }
 
@@ -86,10 +89,10 @@ export class AdminService {
    * @param PaginationInput pagination
    */
 
-  async getAllSession(sub: Types.ObjectId, query: PaginationInput): Promise<ResourceList<Session>> {
+  // async getAllSession(sub: Types.ObjectId, query: PaginationInput): Promise<ResourceList<Session>> {
 
-    return this.sessionService.getAllSession(sub, query)
-  }
+  //   return this.sessionService.getAllSession(sub, query)
+  // }
 
   /**
    * Delete Session By Admin
@@ -129,11 +132,20 @@ export class AdminService {
     const matched = await admin.comparePassword(data.oldPassword);
 
     if (!matched) throw new NotFoundException("Your current password is wrong.")
-    admin.password = hashSync(data.newPassword)
-    console.log(hashSync(data.newPassword))
-    this.sessionService.deleteSession(_id, AUTH_DOMAIN.ADMIN)
-    await admin.save()
-    return "Successfully Changed the password. "
+
+    const newHashPassword = hashSync(data.newPassword)
+
+    const updated = await this.model.updateOne({ _id }, { password: newHashPassword })
+    if (updated.n) {
+      this.sessionService.deleteSession(_id, AUTH_DOMAIN.ADMIN)
+      return "Successfully Changed the password. "
+    }
+
+  }
+
+
+  async getAllUsers(query: PaginationInput): Promise<ResourceList<User>> {
+    return this.userService.getAllUser(query)
   }
 
 }

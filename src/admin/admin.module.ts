@@ -5,9 +5,10 @@ import { Admin } from './admin.type';
 import { AdminResolver } from './admin.resolver';
 
 import { SessionModule } from 'src/session/session.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [TypegooseModule.forFeature([Admin]), SessionModule],
+  imports: [TypegooseModule.forFeature([Admin]), SessionModule, UsersModule],
   providers: [AdminService, AdminResolver],
   exports: [AdminService],
 })

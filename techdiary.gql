@@ -14,13 +14,9 @@ type Session {
   sub: ID!
   domain: String!
   token: String!
-}
-
-type SessionPayload {
-  resourceCount: Int!
-  pageCount: Int!
-  currentPage: Int!
-  data: [Session!]!
+  username: String!
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Article {
@@ -83,6 +79,20 @@ input PaginationInput {
   page: Int
 }
 
+type SessionPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Session!]!
+}
+
+type UserPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [User!]!
+}
+
 type AuthPayload {
   domain: AUTH_DOMAIN!
   token: String!
@@ -106,8 +116,9 @@ input WorkInfoInput {
 }
 
 type Query {
-  sessions(pagination: PaginationInput): SessionPayload!
+  getAllUsers(pagination: PaginationInput): UserPayload!
   getAdmin: Admin
+  sessions(pagination: PaginationInput): SessionPayload!
   articles(pagination: PaginationInput): ArticlePayload!
   article(idOrSlug: idOrSlugArg!): Article!
   me: User
