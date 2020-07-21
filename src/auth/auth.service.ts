@@ -55,6 +55,7 @@ export class AuthService {
 
     // Matched password
     const passwordMatched = await admin.comparePassword(password);
+    
     if (!passwordMatched) throw new UnauthorizedException();
 
     // generate token for admin

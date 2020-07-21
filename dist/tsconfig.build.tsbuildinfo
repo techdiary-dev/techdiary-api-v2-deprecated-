@@ -4401,7 +4401,7 @@
         "affectsGlobalScope": false
       },
       "../src/admin/admin.type.ts": {
-        "version": "173bd11857d90c8553bf4e355b6b20a90b645ee5f5f4e08fffd8d876ac9e6676",
+        "version": "fdccac765c486f25b952a402b68ec39639e3d5d47d6f33409836f82a48d6374a",
         "signature": "c4136242e2472a065023b3c30b88156ff02a4cf2cc14374d420f712e200ba073",
         "affectsGlobalScope": false
       },
@@ -5021,8 +5021,8 @@
         "affectsGlobalScope": false
       },
       "../src/admin/admin.input.ts": {
-        "version": "0b40a2338c26028315c90434312954a55b782c5103194787dfb9a127339c381c",
-        "signature": "fb76bbc09aa2ece49d757443fe4f6d51cd6ce482e05e548afc2d54fc5e9b20f3",
+        "version": "44e3bb95ddc8217d7f359720e2b9579ba45a4da24d51cb091488a71fa932f466",
+        "signature": "f89cd3434a9ca103cf509012a32efe201c0c0a1cf2e4fb3f2ba896b1d7e3dc71",
         "affectsGlobalScope": false
       },
       "../src/session/session.types.ts": {
@@ -5046,8 +5046,8 @@
         "affectsGlobalScope": false
       },
       "../src/admin/admin.service.ts": {
-        "version": "8d6b424de38cf43be95bdaf224c2bb17b507b463289ac9886bd8a24c7cb3c212",
-        "signature": "b3e2271ff554cb5b2cfed297fff3566b28a3199d8987306a17cbb5f7c1559d43",
+        "version": "004ef7116d7c24e1cc9becf371073872483335451a3e9d6ac05c19e0eb563603",
+        "signature": "345f6aec04babb67b3431c00aa6bf5f0bc8adbd24a41d870fddf9870f1e3769a",
         "affectsGlobalScope": false
       },
       "../src/session/session.input.ts": {
@@ -5306,8 +5306,8 @@
         "affectsGlobalScope": false
       },
       "../src/admin/admin.resolver.ts": {
-        "version": "42cfe824c4df672e05bf4e48df8e5cda854ac151bc89eaa4f9ae7ee700373780",
-        "signature": "a392f027edc8379b727ad1b12b1930641443a7ca4c5590b619cf60a2c755eaa8",
+        "version": "db75c8277cb07afec87155e7368724096642d290e112303ed3377ed691e362af",
+        "signature": "ec6d4fbcefba868b96e891480e0acfcf9a302bcbc1d8c0d33ed2b249cbf2eb52",
         "affectsGlobalScope": false
       },
       "../src/session/session.module.ts": {
@@ -5381,7 +5381,7 @@
         "affectsGlobalScope": false
       },
       "../src/auth/auth.service.ts": {
-        "version": "85d8586fba88dbba24acecaac66079ed502bced996c7186d08fe4eba05bae184",
+        "version": "ac203afa418a4716e2e8e0b55f80369d94449c4809371effe8a155c0e993bc57",
         "signature": "8334f632e2d6c651b108006136464b3eec0e119b88a8dbfe7b238c16b213f243",
         "affectsGlobalScope": false
       },
@@ -5431,7 +5431,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "09cd25242727ea8766c53c7fbfc5e06bd438f2e97bb82ace30e8427431ddaa3d",
+        "version": "edb7fefc9b6623fef4a7085ebd96e04305f512121c92d7923d4ced7e42c3d77f",
         "signature": "9fc7f7b6ad854404973b8cba8e6d883f758237991968e9a3965d716d46f1da88",
         "affectsGlobalScope": false
       },
@@ -16045,6 +16045,7 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
+        "../src/admin/admin.input.ts",
         "../src/admin/admin.service.ts",
         "../src/admin/admin.type.ts",
         "../src/auth/decorators/auth.decorator.ts",
@@ -16057,6 +16058,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/jwt/index.d.ts",
         "../node_modules/@typegoose/typegoose/lib/typegoose.d.ts",
+        "../node_modules/@types/bcryptjs/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -26845,10 +26847,8 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/zen-observable-ts/lib/types.d.ts"
       ],
-      "../src/admin/admin.input.ts": [
-        "../node_modules/@nestjs/common/index.d.ts"
-      ],
       "../src/admin/admin.resolver.ts": [
+        "../src/admin/admin.input.ts",
         "../src/admin/admin.service.ts",
         "../src/admin/admin.type.ts",
         "../src/session/session.model.ts",

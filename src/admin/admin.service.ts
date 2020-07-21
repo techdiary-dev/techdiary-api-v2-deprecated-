@@ -1,15 +1,16 @@
-import { Injectable, Type, ForbiddenException } from '@nestjs/common';
+import { Injectable, Type, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { store, show } from 'quick-crud';
 import { Admin } from './admin.type';
-import { CreateAdminInput, UpdateAdminInput } from './admin.input';
+import { CreateAdminInput, UpdateAdminInput, UpdatePassword } from './admin.input';
 import { Types } from 'mongoose';
 import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { SessionService } from 'src/session/session.service';
 import { Session } from '../session/session.model';
 import { AUTH_DOMAIN } from 'src/session/session.types';
 import { JwtService } from '@nestjs/jwt';
+import { hashSync } from 'bcryptjs';
 
 @Injectable()
 export class AdminService {
@@ -85,9 +86,9 @@ export class AdminService {
    * @param PaginationInput pagination
    */
 
-  async getAllSession(sub:Types.ObjectId,query: PaginationInput): Promise<ResourceList<Session>> {
+  async getAllSession(sub: Types.ObjectId, query: PaginationInput): Promise<ResourceList<Session>> {
 
-    return this.sessionService.getAllSession(sub,query)
+    return this.sessionService.getAllSession(sub, query)
   }
 
   /**
@@ -113,4 +114,27 @@ export class AdminService {
     return this.getById(ctx.req.user.sub);
   }
 
+
+  /**
+   * Change Password By Admin
+   * @param _id Subscriber _id
+   * @param newPassword admin new password 
+   * @param domain admin domain
+   */
+
+  async changePassword(_id: Types.ObjectId, data: UpdatePassword): Promise<string> {
+
+    const admin = await this.model.findById(_id)
+
+    const matched = await admin.comparePassword(data.oldPassword);
+
+    if (!matched) throw new NotFoundException("Your current password is wrong.")
+    admin.password = hashSync(data.newPassword)
+    console.log(hashSync(data.newPassword))
+    this.sessionService.deleteSession(_id, AUTH_DOMAIN.ADMIN)
+    await admin.save()
+    return "Successfully Changed the password. "
+  }
+
 }
+

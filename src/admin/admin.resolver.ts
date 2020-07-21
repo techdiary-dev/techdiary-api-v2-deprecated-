@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Admin } from './admin.type';
+import { UpdatePasswordArgs, CreateAdminInput, UpdateAdminArgs } from './admin.input';
 
 
 
@@ -17,8 +18,8 @@ export class AdminResolver {
 
     @Auth(AUTH_DOMAIN.ADMIN)
     @Query(() => SessionPayload)
-    async sessions(@Context('req') req: SessionRequest,@Args('pagination', { nullable: true }) query: PaginationInput): Promise<ResourceList<Session>> {
-        return this.adminService.getAllSession(req.user.sub,query)
+    async sessions(@Context('req') req: SessionRequest, @Args('pagination', { nullable: true }) query: PaginationInput): Promise<ResourceList<Session>> {
+        return this.adminService.getAllSession(req.user.sub, query)
     }
 
     @Auth(AUTH_DOMAIN.ADMIN)
@@ -33,6 +34,27 @@ export class AdminResolver {
     @Query(() => Admin, { nullable: true })
     async getAdmin(@Context() ctx: AppContext): Promise<Admin> {
         return this.adminService.getMe(ctx);
+    }
+
+    @Auth(AUTH_DOMAIN.ADMIN)
+    @Mutation(() => String)
+    async changePassword(@Context('req') req: SessionRequest, @Args() { data }: UpdatePasswordArgs): Promise<string> {
+        return this.adminService.changePassword(req.user.sub, data)
+    }
+
+
+    @Auth(AUTH_DOMAIN.ADMIN)
+    @Mutation(() => Admin)
+    async addAdmin(@Args('data') data: CreateAdminInput): Promise<Admin> {
+        return this.adminService.create(data);
+    }
+
+
+    @Auth(AUTH_DOMAIN.ADMIN)
+    @Mutation(() => Admin)
+    async updateAdmin(@Context('req') req: SessionRequest, @Args() { data }: UpdateAdminArgs): Promise<Admin> {
+        console.log(data)
+        return this.adminService.update(req.user.sub, data)
     }
 }
 

@@ -6,7 +6,9 @@ import { Field, ObjectType,ID } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 
 @plugin(uniqueValidator, { message: '{VALUE} already taken' })
-@pre<Admin>('save', function() {
+  @pre<Admin>('save', function () {
+    console.log(`type ${hashSync(this.password)}`)
+    console.log(`type pass ${this.password}`)
   this.password = hashSync(this.password);
 })
 @ObjectType()
