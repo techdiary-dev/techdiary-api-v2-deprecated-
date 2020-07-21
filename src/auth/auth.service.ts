@@ -124,20 +124,17 @@ export class AuthService {
     const token = await this.jwt.verifyAsync(ctx.req.cookies?.token);
     if (!token) return null;
 
+    if (token.sub) {
+      const sessionExists = await this.sessionService.getSession(
+        token.sub,
+        AUTH_DOMAIN.USER,
+      );
+      if (sessionExists === null) {
+        ctx.res.clearCookie('token');
+        return null;
+      }
+    }
     return this.usersService.getById(token.sub);
-    // else {
-    //   if (token.sub) {
-    //     const sessionExists = await this.sessionService.getSession(
-    //       token.sub,
-    //       AUTH_DOMAIN.USER,
-    //     );
-    //     if (sessionExists === null) {
-    //       // ctx.res.clearCookie('token');
-    //       return null;
-    //     }
-    //   }
-    //   return this.usersService.getById(token.sub);
-    // }
   }
 
   async getUserProfile(username: string): Promise<DocumentType<User>> {
