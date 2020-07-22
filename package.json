@@ -1,8 +1,12 @@
 {
-  "name": "tittle-api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "techdiary-api",
+  "version": "2.0.0",
+  "description": "Techdiary backend api",
+  "author": {
+    "name": "GraphLand team",
+    "url": "https://graphland.dev",
+    "email": "graphland.dev@gmail.com"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

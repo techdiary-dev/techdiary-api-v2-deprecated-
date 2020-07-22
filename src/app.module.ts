@@ -4,12 +4,14 @@ import { TypegooseModule } from 'nestjs-typegoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+/**
+ * -----------------------
+ *  Modules
+ * -----------------------
+ */
 import { AdminModule } from './admin/admin.module';
 import { SessionModule } from './session/session.module';
 import { AuthModule } from './auth/auth.module';
-
 import { RoleModule } from './role/role.module';
 import { UsersModule } from './users/users.module';
 import { ArticleModule } from './article/article.module';
@@ -28,10 +30,6 @@ const config: ConfigService = new ConfigService();
       engine: {
         reportSchema: true,
       },
-      // cors: {
-      //   credentials: true,
-      //   origin: config.get('CLIENT_URL'),
-      // },
       cors: false,
     }),
     //-------------
@@ -44,7 +42,7 @@ const config: ConfigService = new ConfigService();
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
     }),
     AdminModule,
     SessionModule,

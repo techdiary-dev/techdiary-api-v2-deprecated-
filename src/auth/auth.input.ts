@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsEmail } from 'class-validator';
-import { AUTH_DOMAIN } from 'src/session/session.types';
+import { AUTH_DOMAIN } from 'src/session/session.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
 // import { ApiProperty } from '@nestjs/swagger';

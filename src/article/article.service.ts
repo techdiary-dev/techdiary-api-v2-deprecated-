@@ -14,14 +14,14 @@ import {
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
 import { Types } from 'mongoose';
-import { AUTH_DOMAIN } from 'src/session/session.types';
+import { AUTH_DOMAIN } from 'src/session/session.type';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectModel(Article)
     private readonly model: ReturnModelType<typeof Article>,
-  ) { }
+  ) {}
 
   async getArticleByIdOrSlug(
     idOrSlug: idOrSlugArg,
@@ -29,12 +29,25 @@ export class ArticleService {
     return await this.model.findOne(idOrSlug);
   }
 
+  async ArticlesByTag(
+    tag: string,
+    paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return await index({
+      model: this.model,
+      paginationOptions,
+      where: { tags: [{ $regex: new RegExp('^' + tag.toLowerCase(), 'i') }] },
+    });
+  }
+
   async getAuthorArticles(
     authorId: Types.ObjectId,
     paginationOptions: PaginationInput,
     isPublished?: boolean,
   ): Promise<ResourceList<Article>> {
-    const filtered: { author: Types.ObjectId, isPublished?: boolean } = { author: authorId };
+    const filtered: { author: Types.ObjectId; isPublished?: boolean } = {
+      author: authorId,
+    };
     if (isPublished) filtered.isPublished = isPublished;
     return await index({
       model: this.model,
@@ -54,7 +67,7 @@ export class ArticleService {
     data: updateArticleInput,
     _id: Types.ObjectId,
     authorId: Types.ObjectId,
-    domain: AUTH_DOMAIN
+    domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Article>> {
     const article = await this.model.findOne({ _id });
 
@@ -88,18 +101,16 @@ export class ArticleService {
   async deleteArticle(
     _id: Types.ObjectId,
     authorId: Types.ObjectId,
-    domain: AUTH_DOMAIN
+    domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Article>> {
     const article = await this.getArticleByIdOrSlug({ _id });
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
-
     //@ts-ignore
     if (!(domain === AUTH_DOMAIN.ADMIN || article.author.equals(authorId))) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
     }
-
     return this.model.findOneAndDelete({ _id });
   }
 }

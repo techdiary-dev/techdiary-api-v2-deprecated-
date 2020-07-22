@@ -11,7 +11,7 @@ import {
 } from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
 import { LoginDTO, AuthPayload } from './auth.input';
-import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
+import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.type';
 import { Auth } from './decorators/auth.decorator';
 import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { User } from 'src/users/users.type';
@@ -20,7 +20,6 @@ import { ArticleService } from 'src/article/article.service';
 import { Types } from 'mongoose';
 import { Article } from 'src/article/article.type';
 import { CreateAdminInput, UpdateAdminInput } from 'src/admin/admin.input';
-import { type } from 'os';
 import { UpdateUserInput } from 'src/users/users.input';
 
 @Resolver(() => AuthPayload)
@@ -60,7 +59,7 @@ export class AuthResolver {
     const session = await this.authService.loginUser(code);
     ctx.res.cookie('token', session.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV !== 'development',
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
     });
     return session;
