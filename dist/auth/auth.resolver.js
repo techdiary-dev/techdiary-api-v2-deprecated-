@@ -34,8 +34,14 @@ let AuthResolver = class AuthResolver {
     async registerAdmin(data) {
         return this.authService.registerAdmin(data);
     }
-    loginAdmin(data) {
-        return this.authService.loginAdmin(data);
+    async loginAdmin(data, ctx) {
+        const session = await this.authService.loginAdmin(data);
+        ctx.res.cookie('token', session.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 1000 * 60 * 60 * 24 * 365,
+        });
+        return session;
     }
     async adminLogout(req) {
         const dd = await this.authService.logoutAdmin(req.user);
@@ -74,8 +80,9 @@ __decorate([
 __decorate([
     graphql_1.Mutation(() => auth_input_1.AuthPayload),
     __param(0, graphql_1.Args('data')),
+    __param(1, graphql_1.Context()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_input_1.LoginDTO]),
+    __metadata("design:paramtypes", [auth_input_1.LoginDTO, Object]),
     __metadata("design:returntype", Promise)
 ], AuthResolver.prototype, "loginAdmin", null);
 __decorate([

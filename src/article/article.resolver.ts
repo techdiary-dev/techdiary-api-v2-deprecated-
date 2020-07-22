@@ -55,11 +55,12 @@ export class ArticleResolver {
     @Args() { data, _id }: updateArticleArgs,
     @Context() ctx: AppContext,
   ): Promise<Article> {
+    console.log('updateArtilce', JSON.stringify(data), _id);
     return this.articleService.updateArticle(
       data,
       Types.ObjectId(_id),
       ctx.req.user.sub,
-      ctx.req.user.domain
+      ctx.req.user.domain,
     );
   }
 
@@ -72,7 +73,7 @@ export class ArticleResolver {
     return this.articleService.deleteArticle(
       Types.ObjectId(_id),
       ctx.req.user.sub,
-      ctx.req.user.domain
+      ctx.req.user.domain,
     );
   }
 

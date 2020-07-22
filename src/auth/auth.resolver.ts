@@ -41,8 +41,17 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthPayload)
-  loginAdmin(@Args('data') data: LoginDTO): Promise<AuthPayload> {
-    return this.authService.loginAdmin(data);
+  async loginAdmin(
+    @Args('data') data: LoginDTO,
+    @Context() ctx: AppContext,
+  ): Promise<AuthPayload> {
+    const session = await this.authService.loginAdmin(data);
+    ctx.res.cookie('token', session.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
+    });
+    return session;
   }
 
   @Mutation(() => String)
