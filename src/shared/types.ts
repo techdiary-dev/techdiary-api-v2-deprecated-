@@ -1,7 +1,7 @@
 import {} from 'class-validator';
 import { Request, Response } from 'express';
 import { InputType, Field, Int, ObjectType } from '@nestjs/graphql';
-import { JWTPayload } from 'src/session/session.types';
+import { JWTPayload } from 'src/session/session.type';
 
 @ObjectType()
 export class ResourceList<DataModel> {

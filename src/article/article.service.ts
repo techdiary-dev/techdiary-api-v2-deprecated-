@@ -14,7 +14,7 @@ import {
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
 import { Types } from 'mongoose';
-import { AUTH_DOMAIN } from 'src/session/session.types';
+import { AUTH_DOMAIN } from 'src/session/session.type';
 
 @Injectable()
 export class ArticleService {

@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Admin {
+  _id: ID!
   name: String!
   username: String!
   email: String!
@@ -13,13 +14,9 @@ type Session {
   sub: ID!
   domain: String!
   token: String!
-}
-
-type SessionPayload {
-  resourceCount: Int!
-  pageCount: Int!
-  currentPage: Int!
-  data: [Session!]!
+  username: String!
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Article {
@@ -82,6 +79,20 @@ input PaginationInput {
   page: Int
 }
 
+type UserPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [User!]!
+}
+
+type SessionPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Session!]!
+}
+
 type AuthPayload {
   domain: AUTH_DOMAIN!
   token: String!
@@ -105,11 +116,12 @@ input WorkInfoInput {
 }
 
 type Query {
-  sessions(pagination: PaginationInput): SessionPayload!
+  getAllUsers(pagination: PaginationInput): UserPayload!
   getAdmin: Admin
   articles(pagination: PaginationInput): ArticlePayload!
   article(idOrSlug: idOrSlugArg!): Article!
   articlesByTag(pagination: PaginationInput, tag: String!): ArticlePayload!
+  sessions(pagination: PaginationInput): SessionPayload!
   me: User
   profile(username: String!): User!
 }
@@ -120,16 +132,37 @@ input idOrSlugArg {
 }
 
 type Mutation {
-  removeSession(domain: String!, sub: String!): String!
+  changePassword(data: UpdatePassword!): String!
+  addAdmin(data: CreateAdminInput!): Admin!
+  updateAdmin(data: UpdateAdminInput): Admin!
   createArticle(data: CreateArticleInput!): Article!
   updateArticle(data: updateArticleInput, _id: ID!): Article!
   deleteArticle(_id: ID!): Article!
+  removeSession(domain: String!, sub: String!): String!
   registerAdmin(data: CreateAdminInput!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
   adminLogout: String!
   login(oAuthCode: String!): AuthPayload!
   logout: String!
   updateProfile(data: UpdateUserInput!): User!
+}
+
+input UpdatePassword {
+  oldPassword: String!
+  newPassword: String!
+}
+
+input CreateAdminInput {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+}
+
+input UpdateAdminInput {
+  name: String
+  username: String
+  email: String
 }
 
 input CreateArticleInput {
@@ -148,13 +181,6 @@ input updateArticleInput {
   thumbnail: String
   isPublished: Boolean
   seriesName: String
-}
-
-input CreateAdminInput {
-  name: String!
-  username: String!
-  email: String!
-  password: String!
 }
 
 input LoginDTO {

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
 import { LoginDTO, AuthPayload } from './auth.input';
-import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
+import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.type';
 import { Auth } from './decorators/auth.decorator';
 import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { User } from 'src/users/users.type';
