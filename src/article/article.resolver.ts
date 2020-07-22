@@ -40,6 +40,14 @@ export class ArticleResolver {
     return article;
   }
 
+  @Query(() => ArticlePayload)
+  async articlesByTag(
+    @Args('tag') tag: string,
+    @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
+  ) {
+    return this.articleService.ArticlesByTag(tag, paginationOptions);
+  }
+
   @Mutation(() => Article)
   @Auth()
   createArticle(
@@ -59,7 +67,7 @@ export class ArticleResolver {
       data,
       Types.ObjectId(_id),
       ctx.req.user.sub,
-      ctx.req.user.domain
+      ctx.req.user.domain,
     );
   }
 
@@ -72,7 +80,7 @@ export class ArticleResolver {
     return this.articleService.deleteArticle(
       Types.ObjectId(_id),
       ctx.req.user.sub,
-      ctx.req.user.domain
+      ctx.req.user.domain,
     );
   }
 
