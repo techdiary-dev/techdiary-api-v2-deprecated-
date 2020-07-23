@@ -27,6 +27,7 @@ export class AdminResolver {
   @Auth(AUTH_DOMAIN.ADMIN)
   @Query(() => Admin, { nullable: true })
   async getAdmin(@Context() ctx: AppContext): Promise<Admin> {
+    console.log(ctx.req?.cookies);
     return this.adminService.getMe(ctx);
   }
 

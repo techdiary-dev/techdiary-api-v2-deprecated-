@@ -20,6 +20,7 @@ import { AUTH_DOMAIN } from 'src/session/session.type';
 import { hashSync } from 'bcryptjs';
 import { User } from 'src/users/users.type';
 import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminService {
@@ -28,6 +29,7 @@ export class AdminService {
     private readonly model: ReturnModelType<typeof Admin>,
     private readonly userService: UsersService,
     private readonly sessionService: SessionService,
+    private readonly jwt: JwtService,
   ) {}
 
   /**
@@ -42,7 +44,7 @@ export class AdminService {
    * Get an admin via _id
    * @param _id admin doc objectId
    */
-  async getById(_id: Types.ObjectId): Promise<Admin> {
+  async getById(_id: Types.ObjectId): Promise<DocumentType<Admin>> {
     return show({ model: this.model, where: { _id } });
   }
 
@@ -91,8 +93,10 @@ export class AdminService {
   }
 
   async getMe(ctx: AppContext): Promise<DocumentType<Admin>> {
-    //@ts-ignore
-    return this.getById(ctx.req.user.sub);
+    const admin = await this.getById(ctx.req.user.sub);
+    if (!admin) ctx.res.clearCookie('token');
+    console.log(ctx.req?.cookies.token);
+    return admin;
   }
 
   /**
