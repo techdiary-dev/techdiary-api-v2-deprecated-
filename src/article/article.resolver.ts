@@ -63,7 +63,6 @@ export class ArticleResolver {
     @Args() { data, _id }: updateArticleArgs,
     @Context() ctx: AppContext,
   ): Promise<Article> {
-    console.log('updateArtilce', JSON.stringify(data), _id);
     return this.articleService.updateArticle(
       data,
       Types.ObjectId(_id),

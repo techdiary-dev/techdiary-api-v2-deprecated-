@@ -8,7 +8,8 @@ export class HttpExceptionFilter implements GqlExceptionFilter {
     const hosted = GqlArgumentsHost.create(host);
     const ctx: AppContext = hosted.getContext();
     ctx.res.statusCode = exception.getStatus();
-    if (!ctx.req?.user) ctx.res.clearCookie('token');
+    if (!ctx.req?.user && exception.message.includes('token'))
+      ctx.res.clearCookie('token');
 
     return exception;
   }

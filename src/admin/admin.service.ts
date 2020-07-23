@@ -95,7 +95,6 @@ export class AdminService {
   async getMe(ctx: AppContext): Promise<DocumentType<Admin>> {
     const admin = await this.getById(ctx.req.user.sub);
     if (!admin) ctx.res.clearCookie('token');
-    console.log(ctx.req?.cookies.token);
     return admin;
   }
 
