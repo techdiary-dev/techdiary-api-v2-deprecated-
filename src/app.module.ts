@@ -24,13 +24,12 @@ const config: ConfigService = new ConfigService();
       installSubscriptionHandlers: true,
       autoSchemaFile: 'techdiary.gql',
       path: '/',
-      context: allre => {
-        return { req: allre.req, res: allre.res };
-      },
+      context: ({req, res}) => ({ req, res }),
       engine: {
         reportSchema: true,
       },
       cors: false,
+      playground: config.get<boolean>("GQL_PLAYGROUND")
     }),
     //-------------
     ConfigModule.forRoot({ isGlobal: true }),
