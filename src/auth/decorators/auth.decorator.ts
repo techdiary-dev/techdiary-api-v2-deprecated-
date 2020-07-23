@@ -1,5 +1,5 @@
 import { SetMetadata, applyDecorators, UseGuards } from '@nestjs/common';
-import { AUTH_DOMAIN } from 'src/session/session.types';
+import { AUTH_DOMAIN } from 'src/session/session.type';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { RoleGuard, GqlJWTAuthGuard } from '../auth.guard';
 

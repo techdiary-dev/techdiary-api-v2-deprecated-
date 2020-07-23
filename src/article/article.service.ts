@@ -14,7 +14,7 @@ import {
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
 import { Types } from 'mongoose';
-import { AUTH_DOMAIN } from 'src/session/session.types';
+import { AUTH_DOMAIN } from 'src/session/session.type';
 
 @Injectable()
 export class ArticleService {
@@ -27,6 +27,17 @@ export class ArticleService {
     idOrSlug: idOrSlugArg,
   ): Promise<DocumentType<Article>> {
     return await this.model.findOne(idOrSlug);
+  }
+
+  async ArticlesByTag(
+    tag: string,
+    paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return await index({
+      model: this.model,
+      paginationOptions,
+      where: { tags: [{ $regex: new RegExp('^' + tag.toLowerCase(), 'i') }] },
+    });
   }
 
   async getAuthorArticles(
@@ -100,7 +111,6 @@ export class ArticleService {
     if (!(domain === AUTH_DOMAIN.ADMIN || article.author.equals(authorId))) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
     }
-
     return this.model.findOneAndDelete({ _id });
   }
 }

@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 
-import { Session } from './session.model';
+import { Session } from './session.type';
 import { store, index } from 'quick-crud';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AUTH_DOMAIN, JWTPayload } from './session.types';
+import { AUTH_DOMAIN, JWTPayload } from './session.type';
 import { Types } from 'mongoose';
 import { PaginationInput, ResourceList } from 'src/shared/types';
 
@@ -17,7 +17,7 @@ export class SessionService {
     private readonly model: ReturnModelType<typeof Session>,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   /**
    * Get session for any role
@@ -92,18 +92,22 @@ export class SessionService {
     domain: AUTH_DOMAIN,
   ): Promise<boolean> {
     const deleted = await this.model.findOneAndDelete({ sub, domain });
-    if (!deleted) return false;
+    if (!deleted) throw new NotFoundException('Invalid or deleted session');
     return true;
   }
 
-  
   /**
    * Get All Session By Admin
    * @param PaginationInput pagination
    */
-  async getAllSession(pagination: PaginationInput): Promise<ResourceList<Session>> {
-
-    return await index({ model: this.model, paginationOptions: pagination })
+  async getAllSession(
+    sub: Types.ObjectId,
+    pagination: PaginationInput,
+  ): Promise<ResourceList<Session>> {
+    return await index({
+      model: this.model,
+      where: { sub: { $ne: sub } },
+      paginationOptions: pagination,
+    });
   }
-
 }

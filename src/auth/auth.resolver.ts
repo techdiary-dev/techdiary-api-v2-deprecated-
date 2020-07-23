@@ -1,26 +1,13 @@
 import { AuthService } from './auth.service';
-import {
-  Resolver,
-  Mutation,
-  Args,
-  Query,
-  Context,
-  ResolveField,
-  Parent,
-  createUnionType,
-} from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 import { Admin } from 'src/admin/admin.type';
 import { LoginDTO, AuthPayload } from './auth.input';
-import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.types';
+import { AUTH_DOMAIN, SessionRequest } from 'src/session/session.type';
 import { Auth } from './decorators/auth.decorator';
-import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
+import AppContext from 'src/shared/types';
 import { User } from 'src/users/users.type';
-import { SessionService } from 'src/session/session.service';
 import { ArticleService } from 'src/article/article.service';
-import { Types } from 'mongoose';
-import { Article } from 'src/article/article.type';
-import { CreateAdminInput, UpdateAdminInput } from 'src/admin/admin.input';
-import { type } from 'os';
+import { CreateAdminInput } from 'src/admin/admin.input';
 import { UpdateUserInput } from 'src/users/users.input';
 
 @Resolver(() => AuthPayload)
@@ -29,11 +16,6 @@ export class AuthResolver {
     private readonly authService: AuthService,
     private readonly articleService: ArticleService,
   ) {}
-
-  // @Query(() => String)
-  // test(): string {
-  //   return 'this.authService.registerAdmin(data)';
-  // }
 
   @Mutation(() => Admin)
   async registerAdmin(@Args('data') data: CreateAdminInput): Promise<Admin> {
@@ -69,7 +51,7 @@ export class AuthResolver {
     const session = await this.authService.loginUser(code);
     ctx.res.cookie('token', session.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV !== 'development',
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
     });
     return session;

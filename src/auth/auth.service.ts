@@ -9,7 +9,7 @@ import { SessionService } from 'src/session/session.service';
 import { Admin } from 'src/admin/admin.type';
 import { DocumentType } from '@typegoose/typegoose';
 import { LoginDTO, AuthPayload } from './auth.input';
-import { AUTH_DOMAIN, JWTPayload } from 'src/session/session.types';
+import { AUTH_DOMAIN, JWTPayload } from 'src/session/session.type';
 import { JwtService } from '@nestjs/jwt';
 import { RoleService } from 'src/role/role.service';
 import { UsersService } from 'src/users/users.service';
@@ -54,6 +54,7 @@ export class AuthService {
 
     // Matched password
     const passwordMatched = await admin.comparePassword(password);
+
     if (!passwordMatched) throw new UnauthorizedException();
 
     // generate token for admin
@@ -140,14 +141,34 @@ export class AuthService {
     return this.usersService.getByUsername(username);
   }
 
-  async updateAdmin(_id: Types.ObjectId, data: UpdateAdminInput) {
+  /**
+   * Update admin data
+   * @param _id Admin objectId
+   * @param data UpdateUserInput
+   */
+  async updateAdmin(
+    _id: Types.ObjectId,
+    data: UpdateAdminInput,
+  ): Promise<DocumentType<Admin>> {
     return this.adminService.update(_id, data);
   }
 
-  async updateUser(_id: Types.ObjectId, data: UpdateUserInput) {
+  /**
+   * Update user data
+   * @param _id Admin objectId
+   * @param data UpdateUserInput
+   */
+  async updateUser(
+    _id: Types.ObjectId,
+    data: UpdateUserInput,
+  ): Promise<DocumentType<User>> {
     return this.usersService.update(_id, data);
   }
 
+  /**
+   * Get github user details by oAuth Code
+   * @param code oAuth Code
+   */
   async getGithubUserInfoByCode(code: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const client_id: string = this.config.get('GITHUB_APP_CLIENT_ID');

@@ -1,24 +1,34 @@
-import { Injectable, Type, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { store, show } from 'quick-crud';
 import { Admin } from './admin.type';
-import { CreateAdminInput, UpdateAdminInput } from './admin.input';
+import {
+  CreateAdminInput,
+  UpdateAdminInput,
+  UpdatePassword,
+} from './admin.input';
 import { Types } from 'mongoose';
 import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { SessionService } from 'src/session/session.service';
-import { Session } from '../session/session.model';
-import { AUTH_DOMAIN } from 'src/session/session.types';
-import { JwtService } from '@nestjs/jwt';
+import { AUTH_DOMAIN } from 'src/session/session.type';
+import { hashSync } from 'bcryptjs';
+import { User } from 'src/users/users.type';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectModel(Admin)
     private readonly model: ReturnModelType<typeof Admin>,
+    private readonly userService: UsersService,
     private readonly sessionService: SessionService,
-    private readonly jwt: JwtService
-  ) { }
+  ) {}
 
   /**
    * Create an admin
@@ -32,7 +42,7 @@ export class AdminService {
    * Get an admin via _id
    * @param _id admin doc objectId
    */
-  async getById(_id: string): Promise<Admin> {
+  async getById(_id: Types.ObjectId): Promise<Admin> {
     return show({ model: this.model, where: { _id } });
   }
 
@@ -80,37 +90,42 @@ export class AdminService {
     return this.model.countDocuments({});
   }
 
-  /**
-   * Get All Session By Admin
-   * @param PaginationInput pagination
-   */
-
-  async getAllSession(query: PaginationInput): Promise<ResourceList<Session>> {
-
-    return this.sessionService.getAllSession(query)
-  }
-
-  /**
-   * Delete Session By Admin
-   * @param sub Subscriber _id
-   * @param domain Subscriber domain
-   */
-
-  async removeSession(sub: Types.ObjectId, domain: AUTH_DOMAIN): Promise<string> {
-
-    if (this.sessionService.deleteSession(sub, domain)) {
-      return 'You have remove session successfully';
-    } else {
-      throw new ForbiddenException(
-        'Invalid id or you have already  removed',
-      );
-    }
-
-  }
-
   async getMe(ctx: AppContext): Promise<DocumentType<Admin>> {
     //@ts-ignore
     return this.getById(ctx.req.user.sub);
   }
 
+  /**
+   * Change Password By Admin
+   * @param _id Subscriber _id
+   * @param newPassword admin new password
+   * @param domain admin domain
+   */
+
+  async changePassword(
+    _id: Types.ObjectId,
+    data: UpdatePassword,
+  ): Promise<string> {
+    const admin = await this.model.findById(_id);
+
+    const matched = await admin.comparePassword(data.oldPassword);
+
+    if (!matched)
+      throw new NotFoundException('Your current password is wrong.');
+
+    const newHashPassword = hashSync(data.newPassword);
+
+    const updated = await this.model.updateOne(
+      { _id },
+      { password: newHashPassword },
+    );
+    if (updated.n) {
+      this.sessionService.deleteSession(_id, AUTH_DOMAIN.ADMIN);
+      return 'Successfully Changed the password. ';
+    }
+  }
+
+  async getAllUsers(query: PaginationInput): Promise<ResourceList<User>> {
+    return this.userService.getAllUser(query);
+  }
 }

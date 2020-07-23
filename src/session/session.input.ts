@@ -1,26 +1,18 @@
-import {
-    ObjectType, 
-    Field,
-    Int,
-    
-} from "@nestjs/graphql";
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
-import { Session } from "../session/session.model";
-
-
+import { Session } from '../session/session.type';
 
 @ObjectType()
 export class SessionPayload {
-    @Field(() => Int)
-    resourceCount: number;
+  @Field(() => Int)
+  resourceCount: number;
 
-    @Field(() => Int)
-    pageCount: number;
+  @Field(() => Int)
+  pageCount: number;
 
-    @Field(() => Int)
-    currentPage: number;
+  @Field(() => Int)
+  currentPage: number;
 
-    @Field(() => [Session])
-    data: Session[];
+  @Field(() => [Session])
+  data: Session[];
 }
-

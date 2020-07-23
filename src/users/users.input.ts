@@ -1,5 +1,5 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { Link, WorkInfo } from './users.type';
+import { InputType, Field, Int, ObjectType } from '@nestjs/graphql';
+import { Link, WorkInfo, User } from './users.type';
 
 // @InputType()
 // export class LinksInput {
@@ -59,4 +59,24 @@ export class UpdateUserInput {
 
   @Field(() => [WorkInfo], { nullable: true })
   workInfo?: WorkInfo[];
+}
+
+
+
+
+
+
+@ObjectType()
+export class UserPayload {
+  @Field(() => Int)
+  resourceCount: number;
+
+  @Field(() => Int)
+  pageCount: number;
+
+  @Field(() => Int)
+  currentPage: number;
+
+  @Field(() => [User])
+  data: User[];
 }
