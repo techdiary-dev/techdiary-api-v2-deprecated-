@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
 import { UsersModule } from './users/users.module';
 import { ArticleModule } from './article/article.module';
+import { InteractionModule } from './interaction/interaction.module';
 
 const config: ConfigService = new ConfigService();
 
@@ -50,6 +51,7 @@ const config: ConfigService = new ConfigService();
     RoleModule,
     UsersModule,
     ArticleModule,
+    InteractionModule,
   ],
 })
 export class AppModule {}

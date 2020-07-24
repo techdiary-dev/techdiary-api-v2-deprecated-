@@ -86,10 +86,17 @@ type UserPayload {
   data: [User!]!
 }
 
-type SessionPayload {
-  resourceCount: Int!
-  pageCount: Int!
-  currentPage: Int!
+type ArticlePagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [Article!]!
+}
+
+type SessionPagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
   data: [Session!]!
 }
 
@@ -101,6 +108,23 @@ type AuthPayload {
 enum AUTH_DOMAIN {
   ADMIN
   USER
+}
+
+type InterAction {
+  _id: ID!
+  user: User!
+  resource: String!
+  resourceId: ID!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type InteractionPagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [InterAction!]!
 }
 
 input LinkInput {
@@ -118,12 +142,13 @@ input WorkInfoInput {
 type Query {
   getAllUsers(pagination: PaginationInput): UserPayload!
   getAdmin: Admin
-  articles(pagination: PaginationInput): ArticlePayload!
+  articles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
-  articlesByTag(pagination: PaginationInput, tag: String!): ArticlePayload!
-  sessions(pagination: PaginationInput): SessionPayload!
+  articlesByTag(pagination: PaginationInput, tag: String!): ArticlePagination!
+  sessions(pagination: PaginationInput): SessionPagination!
   me: User
   profile(username: String!): User!
+  articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
 }
 
 input idOrSlugArg {
@@ -145,6 +170,8 @@ type Mutation {
   login(oAuthCode: String!): AuthPayload!
   logout: String!
   updateProfile(data: UpdateUserInput!): User!
+  toggleLike(data: LikeInput!): Boolean!
+  toggleBookmark(data: BookmarkInput!): Boolean!
 }
 
 input UpdatePassword {
@@ -200,4 +227,14 @@ input UpdateUserInput {
   links: [LinkInput!]
   skills: [String!]
   workInfo: [WorkInfoInput!]
+}
+
+input LikeInput {
+  articleId: ID!
+  isLiked: Boolean!
+}
+
+input BookmarkInput {
+  articleId: ID!
+  isBookmarked: Boolean!
 }

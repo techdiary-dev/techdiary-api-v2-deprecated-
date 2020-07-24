@@ -6,18 +6,21 @@ import {
   ResolveField,
   Parent,
   Mutation,
+  ObjectType,
 } from '@nestjs/graphql';
 
 import { SessionService } from './session.service';
 import { SessionPayload } from './session.input';
 import { SessionRequest, AUTH_DOMAIN, Session } from './session.type';
-import { PaginationInput, ResourceList } from 'src/shared/types';
+import { PaginationInput, ResourceList, Pagination } from 'src/shared/types';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 
 import { UsersService } from 'src/users/users.service';
 import { AdminService } from 'src/admin/admin.service';
 import { Types } from 'mongoose';
 
+@ObjectType()
+class SessionPagination extends Pagination(Session) {}
 @Resolver(() => Session)
 export class SessionResolver {
   constructor(
@@ -27,7 +30,7 @@ export class SessionResolver {
   ) {}
 
   @Auth(AUTH_DOMAIN.ADMIN)
-  @Query(() => SessionPayload)
+  @Query(() => SessionPagination)
   async sessions(
     @Context('req') req: SessionRequest,
     @Args('pagination', { nullable: true }) query: PaginationInput,
