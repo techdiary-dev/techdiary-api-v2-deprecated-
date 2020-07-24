@@ -43,33 +43,3 @@ export class InterAction {
   @Field()
   updatedAt?: string;
 }
-
-@ObjectType()
-export class ArticleLikersPagination {
-  @Field()
-  currentPage: number;
-
-  @Field()
-  pageCount: number;
-
-  @Field()
-  resourceCount: number;
-
-  @Field()
-  data: User[];
-}
-
-@ObjectType()
-export class BookmarkPagination {
-  @Field()
-  currentPage: number;
-
-  @Field()
-  pageCount: number;
-
-  @Field()
-  resourceCount: number;
-
-  @Field()
-  data: Article[];
-}

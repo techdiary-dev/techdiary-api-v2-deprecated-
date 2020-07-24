@@ -7,6 +7,7 @@ import {
   ResolveField,
   Parent,
   ID,
+  ObjectType,
 } from '@nestjs/graphql';
 import { Article } from './article.type';
 import {
@@ -15,17 +16,23 @@ import {
   CreateArticleInput,
   updateArticleArgs,
 } from './article.input';
-import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
+import AppContext, {
+  PaginationInput,
+  ResourceList,
+  Pagination,
+} from 'src/shared/types';
 import { ArticleService } from './article.service';
 import { DocumentType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 
+@ObjectType()
+class ArticlePagination extends Pagination(Article) {}
 @Resolver(() => Article)
 export class ArticleResolver {
   constructor(private readonly articleService: ArticleService) {}
 
-  @Query(() => ArticlePayload)
+  @Query(() => ArticlePagination)
   async articles(
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
   ): Promise<ResourceList<Article>> {
@@ -40,11 +47,11 @@ export class ArticleResolver {
     return article;
   }
 
-  @Query(() => ArticlePayload)
+  @Query(() => ArticlePagination)
   async articlesByTag(
     @Args('tag') tag: string,
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
-  ) {
+  ): Promise<ResourceList<Article>> {
     return this.articleService.ArticlesByTag(tag, paginationOptions);
   }
 

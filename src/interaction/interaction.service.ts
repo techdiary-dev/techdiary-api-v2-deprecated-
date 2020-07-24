@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
-import { InterAction, INTERACTION_TYPE } from './interaction.type';
+import {
+  InterAction,
+  INTERACTION_TYPE,
+  INTERACTION_RESOURCE,
+} from './interaction.type';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
 import { InteractionTogglerType } from './interaction.input';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class InteractionService {
@@ -47,8 +52,8 @@ export class InteractionService {
 
   async interactionStates(
     type: INTERACTION_TYPE,
-    resource: string,
-    resourceId: string,
+    resource: INTERACTION_RESOURCE,
+    resourceId: Types.ObjectId,
     pagination: PaginationInput,
   ): Promise<ResourceList<InterAction>> {
     return index({
