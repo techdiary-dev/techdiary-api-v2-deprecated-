@@ -55,7 +55,6 @@ export class UsersService {
     _id: Types.ObjectId,
     data: UpdateUserInput,
   ): Promise<DocumentType<User>> {
-    console.log('userserviceUpdate', data);
     return this.model.findOneAndUpdate({ _id }, data, { new: true });
   }
   async getByGithubUID(code: string): Promise<DocumentType<User>> {

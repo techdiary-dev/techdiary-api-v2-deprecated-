@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { JWTPayload } from 'src/session/session.type';
 import { SessionService } from 'src/session/session.service';
 import { Request } from 'express';
+import { GqlExceptionFilter } from '@nestjs/graphql';
 
 @Injectable()
 export class JWTStrategy extends PassportStrategy(Strategy) {

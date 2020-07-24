@@ -51,7 +51,6 @@ export class AdminResolver {
     @Context('req') req: SessionRequest,
     @Args() { data }: UpdateAdminArgs,
   ): Promise<Admin> {
-    console.log(data);
     return this.adminService.update(req.user.sub, data);
   }
 }

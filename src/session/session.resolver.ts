@@ -16,7 +16,6 @@ import { Auth } from 'src/auth/decorators/auth.decorator';
 
 import { UsersService } from 'src/users/users.service';
 import { AdminService } from 'src/admin/admin.service';
-import { types } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @Resolver(() => Session)
