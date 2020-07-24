@@ -5,9 +5,16 @@ import { JWTPayload } from 'src/session/session.type';
 
 @ObjectType()
 export class ResourceList<DataModel> {
+  @Field()
   currentPage: number;
+
+  @Field()
   pageCount: number;
+
+  @Field()
   resourceCount: number;
+
+  @Field(() => [DataModel])
   data: DataModel[];
 }
 

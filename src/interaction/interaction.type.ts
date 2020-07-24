@@ -1,22 +1,39 @@
-import { ObjectType, Field } from '@nestjs/graphql';
-import { prop, Ref, modelOptions } from '@typegoose/typegoose';
-import { Article } from 'src/article/article.type';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { prop, Ref, modelOptions, plugin } from '@typegoose/typegoose';
+import * as mongoosePopulate from 'mongoose-autopopulate';
 import { User } from 'src/users/users.type';
+import { Types } from 'mongoose';
+import { Article } from 'src/article/article.type';
 
 export enum INTERACTION_TYPE {
   LIKE = 'LIKE',
   BOOKMARK = 'BOOKMARK',
 }
 
+export enum INTERACTION_RESOURCE {
+  ARTICLE = 'ARTICLE',
+}
+
+@plugin(mongoosePopulate as any)
 @ObjectType()
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class InterAction {
-  @prop({ ref: 'Article', autopopulate: true })
-  articleId: Ref<Article>;
+  @Field(() => ID)
+  _id?: Types.ObjectId;
 
+  @Field(() => User)
   @prop({ ref: 'User', autopopulate: true })
-  userId: Ref<User>;
+  user: Ref<User>;
 
+  @Field()
+  @prop()
+  resource: INTERACTION_RESOURCE;
+
+  @Field(() => ID)
+  @prop()
+  resourceId: Types.ObjectId;
+
+  @Field()
   @prop()
   type: INTERACTION_TYPE;
 
@@ -25,4 +42,34 @@ export class InterAction {
 
   @Field()
   updatedAt?: string;
+}
+
+@ObjectType()
+export class ArticleLikersPagination {
+  @Field()
+  currentPage: number;
+
+  @Field()
+  pageCount: number;
+
+  @Field()
+  resourceCount: number;
+
+  @Field()
+  data: User[];
+}
+
+@ObjectType()
+export class BookmarkPagination {
+  @Field()
+  currentPage: number;
+
+  @Field()
+  pageCount: number;
+
+  @Field()
+  resourceCount: number;
+
+  @Field()
+  data: Article[];
 }

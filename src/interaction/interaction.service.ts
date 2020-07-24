@@ -1,50 +1,60 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { InterAction, INTERACTION_TYPE } from './interaction.type';
-import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
-import { ArticleService } from 'src/article/article.service';
+import { ReturnModelType } from '@typegoose/typegoose';
+import { PaginationInput, ResourceList } from 'src/shared/types';
+import { index } from 'quick-crud';
+import { InteractionTogglerType } from './interaction.input';
 
 @Injectable()
 export class InteractionService {
   constructor(
     @InjectModel(InterAction)
     private readonly model: ReturnModelType<typeof InterAction>,
-    private readonly articleService: ArticleService,
   ) {}
 
-  async toggleLikes(
-    articleId: Types.ObjectId,
-    userId: Types.ObjectId,
-    isLiked: boolean,
-  ): Promise<DocumentType<InterAction>> {
+  async toggleInteraction({
+    type,
+    resource,
+    resourceId,
+    userId,
+    isInteracted,
+  }: InteractionTogglerType): Promise<boolean> {
     const interaction = await this.model.findOne({
-      articleId,
-      userId,
-      type: INTERACTION_TYPE.LIKE,
+      resource,
+      resourceId,
+      user: userId,
+      type,
     });
 
     // Make a like
-    if (!interaction && isLiked) {
-      return this.model.create({
-        articleId,
-        userId,
-        type: INTERACTION_TYPE.LIKE,
+    if (!interaction && isInteracted) {
+      await this.model.create({
+        resource,
+        resourceId,
+        user: userId,
+        type,
       });
+      return true;
     }
     // Remove the like
-    else if (interaction && !isLiked) {
+    else if (interaction && !isInteracted) {
       await interaction.remove();
+      return true;
     }
-
-    return interaction;
+    return false;
   }
 
-  // async toggleBookmarks(){
-
-  // }
-
-  // async interactions(){
-
-  // }
+  async interactionStates(
+    type: INTERACTION_TYPE,
+    resource: string,
+    resourceId: string,
+    pagination: PaginationInput,
+  ): Promise<ResourceList<InterAction>> {
+    return index({
+      model: this.model,
+      where: { resource, resourceId, type },
+      paginationOptions: pagination,
+    });
+  }
 }
