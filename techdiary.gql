@@ -32,8 +32,8 @@ type Article {
   author: User
   createdAt: String!
   updatedAt: String!
-  series: [Article!]
   seriesName: String
+  series: [Article!]
   url: String!
 }
 
@@ -144,7 +144,7 @@ type Query {
   getAdmin: Admin
   articles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
-  articlesByTag(pagination: PaginationInput, tag: String!): ArticlePagination!
+  articlesByTag(pagination: PaginationInput, tag: [String!]!): ArticlePagination!
   sessions(pagination: PaginationInput): SessionPagination!
   me: User
   profile(username: String!): User!

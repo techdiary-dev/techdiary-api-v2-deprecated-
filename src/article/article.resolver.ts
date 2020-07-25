@@ -22,7 +22,7 @@ import AppContext, {
   Pagination,
 } from 'src/shared/types';
 import { ArticleService } from './article.service';
-import { DocumentType } from '@typegoose/typegoose';
+import { DocumentType, isDocument } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 
@@ -49,7 +49,7 @@ export class ArticleResolver {
 
   @Query(() => ArticlePagination)
   async articlesByTag(
-    @Args('tag') tag: string,
+    @Args('tag', { type: () => [String] }) tag: string[],
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
   ): Promise<ResourceList<Article>> {
     return this.articleService.ArticlesByTag(tag, paginationOptions);
@@ -93,8 +93,9 @@ export class ArticleResolver {
 
   @ResolveField()
   url(@Parent() parent: Article): string {
-    // @ts-ignore
-    return `/${parent.author?.username}/${parent.slug}`;
+    return `/${isDocument(parent.author) && parent.author.username}/${
+      parent.slug
+    }`;
   }
 
   @ResolveField()
@@ -109,8 +110,8 @@ export class ArticleResolver {
       .join(' ');
   }
 
-  @ResolveField()
-  series(@Parent() parent: Article): Promise<DocumentType<Article>[]> {
-    return this.articleService.findSeriesArticles(parent);
-  }
+  // @ResolveField()
+  // series(@Parent() parent: Article): Promise<DocumentType<Article>[]> {
+  //   return this.articleService.findSeriesArticles(parent);
+  // }
 }

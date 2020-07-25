@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Article } from './article.type';
 import { InjectModel } from 'nestjs-typegoose';
-import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
+import { ReturnModelType, DocumentType, isRefType } from '@typegoose/typegoose';
 import {
   idOrSlugArg,
   CreateArticleInput,
@@ -30,13 +30,16 @@ export class ArticleService {
   }
 
   async ArticlesByTag(
-    tag: string,
+    tags: string[],
     paginationOptions: PaginationInput,
   ): Promise<ResourceList<Article>> {
+    const allTags = tags.map(tag => ({
+      tags: { $regex: new RegExp('^' + tag.toLowerCase(), 'i') },
+    }));
     return await index({
       model: this.model,
       paginationOptions,
-      where: { tags: [{ $regex: new RegExp('^' + tag.toLowerCase(), 'i') }] },
+      where: { $and: allTags },
     });
   }
 
@@ -107,8 +110,12 @@ export class ArticleService {
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
-    //@ts-ignore
-    if (!(domain === AUTH_DOMAIN.ADMIN || article.author.equals(authorId))) {
+    if (
+      !(
+        domain === AUTH_DOMAIN.ADMIN ||
+        (isRefType(article.author) && article.author.equals(authorId))
+      )
+    ) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
     }
     return this.model.findOneAndDelete({ _id });
