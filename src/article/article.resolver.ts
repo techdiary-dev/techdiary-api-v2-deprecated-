@@ -110,8 +110,8 @@ export class ArticleResolver {
       .join(' ');
   }
 
-  // @ResolveField()
-  // series(@Parent() parent: Article): Promise<DocumentType<Article>[]> {
-  //   return this.articleService.findSeriesArticles(parent);
-  // }
+  @ResolveField()
+  series(@Parent() parent: Article): Promise<DocumentType<Article>[]> {
+    return this.articleService.findSeriesArticles(parent);
+  }
 }

@@ -39,7 +39,7 @@ export class ArticleService {
     return await index({
       model: this.model,
       paginationOptions,
-      where: { $and: allTags },
+      where: { $and: allTags, isPublished: true },
     });
   }
 
@@ -76,8 +76,7 @@ export class ArticleService {
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
-    // @ts-ignore
-    if (!(domain === AUTH_DOMAIN.ADMIN || article.author.equals(authorId))) {
+    if (!(isRefType(article.author) && article.author.equals(authorId))) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
     }
     return this.model.findOneAndUpdate({ _id }, data, { new: true });
