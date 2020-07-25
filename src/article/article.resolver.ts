@@ -49,14 +49,14 @@ export class ArticleResolver {
 
   @Query(() => ArticlePagination)
   async articlesByTag(
-    @Args('tag', { type: () => [String] }) tag: string[],
+    @Args('tags', { type: () => [String] }) tags: string[],
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
   ): Promise<ResourceList<Article>> {
-    return this.articleService.ArticlesByTag(tag, paginationOptions);
+    return this.articleService.ArticlesByTag(tags, paginationOptions);
   }
 
-  @Mutation(() => Article)
   @Auth()
+  @Mutation(() => Article)
   createArticle(
     @Args('data') data: CreateArticleInput,
     @Context() ctx: AppContext,
