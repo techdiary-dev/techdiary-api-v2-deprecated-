@@ -1,5 +1,13 @@
-import { InputType, Field, Int, ObjectType } from '@nestjs/graphql';
+import {
+  InputType,
+  Field,
+  Int,
+  ObjectType,
+  ArgsType,
+  ID,
+} from '@nestjs/graphql';
 import { Link, WorkInfo, User } from './users.type';
+import { Types } from 'mongoose';
 
 // @InputType()
 // export class LinksInput {
@@ -61,10 +69,14 @@ export class UpdateUserInput {
   workInfo?: WorkInfo[];
 }
 
+@ArgsType()
+export class UpdateUserArgs {
+  @Field(() => ID)
+  userId: Types.ObjectId;
 
-
-
-
+  @Field(() => UpdateUserInput, { nullable:true })
+  data: UpdateUserInput;
+}
 
 @ObjectType()
 export class UserPayload {

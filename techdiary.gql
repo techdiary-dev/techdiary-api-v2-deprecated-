@@ -79,6 +79,13 @@ input PaginationInput {
   page: Int
 }
 
+type AdminPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Admin!]!
+}
+
 type UserPayload {
   resourceCount: Int!
   pageCount: Int!
@@ -142,9 +149,10 @@ input WorkInfoInput {
 type Query {
   getAllUsers(pagination: PaginationInput): UserPayload!
   getAdmin: Admin
+  admins(pagination: PaginationInput): AdminPayload!
   articles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
-  articlesByTag(pagination: PaginationInput, tag: [String!]!): ArticlePagination!
+  articlesByTag(pagination: PaginationInput, tags: [String!]!): ArticlePagination!
   sessions(pagination: PaginationInput): SessionPagination!
   me: User
   profile(username: String!): User!
@@ -160,6 +168,7 @@ type Mutation {
   changePassword(data: UpdatePassword!): String!
   addAdmin(data: CreateAdminInput!): Admin!
   updateAdmin(data: UpdateAdminInput): Admin!
+  updateUserByAdmin(userId: ID!, data: UpdateUserInput): User!
   createArticle(data: CreateArticleInput!): Article!
   updateArticle(data: updateArticleInput, _id: ID!): Article!
   deleteArticle(_id: ID!): Article!
@@ -192,6 +201,20 @@ input UpdateAdminInput {
   email: String
 }
 
+input UpdateUserInput {
+  name: String
+  username: String
+  email: String
+  profilePhoto: String
+  education: String
+  designation: String
+  location: String
+  bio: String
+  links: [LinkInput!]
+  skills: [String!]
+  workInfo: [WorkInfoInput!]
+}
+
 input CreateArticleInput {
   title: String
   body: String
@@ -213,20 +236,6 @@ input updateArticleInput {
 input LoginDTO {
   identifier: String!
   password: String!
-}
-
-input UpdateUserInput {
-  name: String
-  username: String
-  email: String
-  profilePhoto: String
-  education: String
-  designation: String
-  location: String
-  bio: String
-  links: [LinkInput!]
-  skills: [String!]
-  workInfo: [WorkInfoInput!]
 }
 
 input LikeInput {

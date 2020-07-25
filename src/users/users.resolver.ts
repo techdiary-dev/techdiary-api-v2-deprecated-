@@ -1,13 +1,28 @@
-import { Resolver, ResolveField, Parent, Args, Info } from '@nestjs/graphql';
+import {
+  Resolver,
+  ResolveField,
+  Parent,
+  Args,
+  Info,
+  Mutation,
+} from '@nestjs/graphql';
 import { User } from './users.type';
-import { PaginationInput, ResourceList } from 'src/shared/types';
+import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
 import { Article } from 'src/article/article.type';
 import { GraphQLResolveInfo } from 'graphql';
 import { ArticleService } from 'src/article/article.service';
+import { AUTH_DOMAIN } from 'src/session/session.type';
+import { Types } from 'mongoose';
+import { UpdateUserArgs } from './users.input';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { UsersService } from './users.service';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(
+    private readonly articleService: ArticleService,
+    private readonly userService: UsersService,
+  ) {}
 
   @ResolveField(() => User)
   articles(
@@ -19,5 +34,13 @@ export class UserResolver {
       return this.articleService.getAuthorArticles(author._id, pagination);
     }
     return this.articleService.getAuthorArticles(author._id, pagination, true);
+  }
+
+  @Auth(AUTH_DOMAIN.ADMIN)
+  @Mutation(() => User)
+  async updateUserByAdmin(
+    @Args() { userId, data }: UpdateUserArgs,
+  ): Promise<User> {
+    return this.userService.update(userId, data);
   }
 }

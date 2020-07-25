@@ -1,5 +1,11 @@
 import { IsNotEmpty, IsEmail } from 'class-validator';
-import { InputType, Field, PartialType, ArgsType } from '@nestjs/graphql';
+import {
+  InputType,
+  Field,
+  ArgsType,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
 import { Admin } from './admin.type';
 
 @InputType()
@@ -55,4 +61,19 @@ export class UpdatePassword {
 export class UpdatePasswordArgs {
   @Field(() => UpdatePassword)
   data: UpdatePassword;
+}
+
+@ObjectType()
+export class AdminPayload {
+  @Field(() => Int)
+  resourceCount: number;
+
+  @Field(() => Int)
+  pageCount: number;
+
+  @Field(() => Int)
+  currentPage: number;
+
+  @Field(() => [Admin])
+  data: Admin[];
 }
