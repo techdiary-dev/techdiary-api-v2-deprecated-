@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { Article } from './article.type';
 import { InjectModel } from 'nestjs-typegoose';
-import { ReturnModelType, DocumentType, isRefType } from '@typegoose/typegoose';
+import {
+  ReturnModelType,
+  DocumentType,
+  isDocument,
+} from '@typegoose/typegoose';
 import {
   idOrSlugArg,
   CreateArticleInput,
@@ -76,7 +80,7 @@ export class ArticleService {
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
-    if (!(isRefType(article.author) && article.author.equals(authorId))) {
+    if (!(isDocument(article.author) && article.author._id.equals(authorId))) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
     }
     return this.model.findOneAndUpdate({ _id }, data, { new: true });
@@ -112,7 +116,7 @@ export class ArticleService {
     if (
       !(
         domain === AUTH_DOMAIN.ADMIN ||
-        (isRefType(article.author) && article.author.equals(authorId))
+        (isDocument(article.author) && article.author._id.equals(authorId))
       )
     ) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
