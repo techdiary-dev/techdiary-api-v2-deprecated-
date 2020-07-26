@@ -47,7 +47,18 @@ export class InteractionResolver {
       pagination,
     );
   }
-
+  @Query(() => InteractionPagination)
+  async myBookmarks(
+    @Args('articleId', { type: () => ID }) articleId: string,
+    @Args('pagination', { nullable: true }) pagination: PaginationInput,
+  ): Promise<ResourceList<InterAction>> {
+    return this.interactionService.interactionStates(
+      INTERACTION_TYPE.BOOKMARK,
+      INTERACTION_RESOURCE.ARTICLE,
+      Types.ObjectId(articleId),
+      pagination,
+    );
+  }
   @Auth()
   @Mutation(() => Boolean)
   async toggleLike(

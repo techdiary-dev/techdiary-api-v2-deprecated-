@@ -134,6 +134,14 @@ type InteractionPagination {
   data: [InterAction!]!
 }
 
+type Comment {
+  _id: ID!
+  body: String!
+  author: User!
+  parent: Comment!
+  root: Article!
+}
+
 input LinkInput {
   text: String!
   link: String!
@@ -157,6 +165,7 @@ type Query {
   me: User
   profile(username: String!): User!
   articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
+  myBookmarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
 }
 
 input idOrSlugArg {
@@ -181,6 +190,7 @@ type Mutation {
   updateProfile(data: UpdateUserInput!): User!
   toggleLike(data: LikeInput!): Boolean!
   toggleBookmark(data: BookmarkInput!): Boolean!
+  createComment: Comment!
 }
 
 input UpdatePassword {

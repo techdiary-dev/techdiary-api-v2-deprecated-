@@ -40,6 +40,7 @@ devDependencies:
   '@types/jest': 25.2.3
   '@types/jsonwebtoken': 8.5.0
   '@types/mongoose': 5.7.32
+  '@types/mongoose-autopopulate': 0.10.1
   '@types/node': 13.13.14
   '@types/passport-local': 1.0.33
   '@types/supertest': 2.0.10
@@ -1845,6 +1846,12 @@ packages:
       '@types/node': 13.13.14
     resolution:
       integrity: sha512-2H/Owt+pHCl9YmBOYnXc3VdnxejJEjVdH+QCWL5ZAfPehEn3evygKBX3/vKRv7aTwfNbUd0E5vjJdQklH/9a6w==
+  /@types/mongoose-autopopulate/0.10.1:
+    dependencies:
+      '@types/mongoose': 5.7.32
+    dev: true
+    resolution:
+      integrity: sha512-L67MAIE3WEoTtt7a7/spRYk+76lgp67FAP6I38Y9NcC1kQuzwqnukTaJzodfb8180wxHZM4qt68u6x6ptuDRaQ==
   /@types/mongoose/5.7.32:
     dependencies:
       '@types/mongodb': 3.5.25
@@ -10077,6 +10084,7 @@ specifiers:
   '@types/jest': 25.2.3
   '@types/jsonwebtoken': ^8.5.0
   '@types/mongoose': ^5.7.28
+  '@types/mongoose-autopopulate': ^0.10.1
   '@types/node': ^13.9.1
   '@types/passport-local': ^1.0.33
   '@types/supertest': ^2.0.8
