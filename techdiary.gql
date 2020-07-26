@@ -138,8 +138,16 @@ type Comment {
   _id: ID!
   body: String!
   author: User!
-  parent: Comment!
-  root: Article!
+  parent: ID
+  article: ID!
+  comments: [Comment!]
+}
+
+type PaginateComment {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [Comment!]!
 }
 
 input LinkInput {
@@ -166,6 +174,7 @@ type Query {
   profile(username: String!): User!
   articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
+  getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
 }
 
 input idOrSlugArg {
@@ -190,7 +199,9 @@ type Mutation {
   updateProfile(data: UpdateUserInput!): User!
   toggleLike(data: LikeInput!): Boolean!
   toggleBookmark(data: BookmarkInput!): Boolean!
-  createComment: Comment!
+  createComment(data: CreateCommentInput!): Comment!
+  updateComment(data: UpdateCommentInput!, _id: ID!): Comment!
+  deleteComment(_id: ID!): Comment!
 }
 
 input UpdatePassword {
@@ -256,4 +267,16 @@ input LikeInput {
 input BookmarkInput {
   articleId: ID!
   isBookmarked: Boolean!
+}
+
+input CreateCommentInput {
+  body: String!
+  parent: ID
+  article: ID
+}
+
+input UpdateCommentInput {
+  body: String
+  parent: ID
+  article: ID
 }

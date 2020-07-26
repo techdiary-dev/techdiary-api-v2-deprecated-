@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Ref, prop, modelOptions, plugin } from '@typegoose/typegoose';
+import { Ref, prop, modelOptions, plugin, pre } from '@typegoose/typegoose';
 import { User } from 'src/users/users.type';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Article } from 'src/article/article.type';
@@ -26,11 +26,20 @@ export class Comment {
   @prop({ ref: () => User, autopopulate: true })
   author: Ref<User>;
 
-  @Field(() => Comment)
-  @prop({ ref: () => Comment, autopopulate: true })
+  @Field(() => ID, { nullable: true })
+  @prop({ ref: () => Comment })
   parent?: Ref<Comment>;
 
-  @Field(() => Article)
+  @Field(() => ID)
   @prop({ ref: () => Article })
-  root?: Ref<Article>;
+  article: Ref<Article>;
+
+  @Field(() => [Comment], { nullable: true })
+  @prop({
+    ref: () => Comment,
+    localField: '_id',
+    foreignField: 'parent',
+    autopopulate: true,
+  })
+  comments?: Ref<Comment>[];
 }
