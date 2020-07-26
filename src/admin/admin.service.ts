@@ -94,7 +94,6 @@ export class AdminService {
 
   async getMe(ctx: AppContext): Promise<DocumentType<Admin>> {
     const admin = await this.getById(ctx.req.user.sub);
-    if (!admin) ctx.res.clearCookie('token');
     return admin;
   }
 
@@ -144,6 +143,10 @@ export class AdminService {
     sub: Types.ObjectId,
     query: PaginationInput,
   ): Promise<ResourceList<Admin>> {
-    return index({ model: this.model,where: { _id: { $ne: sub } }, paginationOptions: query });
+    return index({
+      model: this.model,
+      where: { _id: { $ne: sub } },
+      paginationOptions: query,
+    });
   }
 }
