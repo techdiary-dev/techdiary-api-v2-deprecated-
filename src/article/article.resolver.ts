@@ -11,7 +11,6 @@ import {
 } from '@nestjs/graphql';
 import { Article } from './article.type';
 import {
-  ArticlePayload,
   idOrSlugArg,
   CreateArticleInput,
   updateArticleArgs,

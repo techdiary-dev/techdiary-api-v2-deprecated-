@@ -80,7 +80,12 @@ export class ArticleService {
 
     if (!article) throw new NotFoundException('ডায়েরি পাওয়া যায়নি');
 
-    if (!(isDocument(article.author) && article.author._id.equals(authorId))) {
+    if (
+      !(
+        domain === AUTH_DOMAIN.ADMIN ||
+        (isDocument(article.author) && article.author._id.equals(authorId))
+      )
+    ) {
       throw new ForbiddenException('এটি আপনার ডায়েরি নয়');
     }
     return this.model.findOneAndUpdate({ _id }, data, { new: true });
