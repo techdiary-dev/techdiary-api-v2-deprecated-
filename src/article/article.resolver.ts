@@ -50,9 +50,10 @@ export class ArticleResolver {
   @Query(() => ArticlePagination)
   async articlesByTag(
     @Args('tags', { type: () => [String] }) tags: string[],
+    @Args('and', { type: () => Boolean, nullable: true }) and: boolean,
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
   ): Promise<ResourceList<Article>> {
-    return this.articleService.ArticlesByTag(tags, paginationOptions);
+    return this.articleService.ArticlesByTag(tags, paginationOptions, and);
   }
 
   @Auth()

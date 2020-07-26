@@ -36,14 +36,17 @@ export class ArticleService {
   async ArticlesByTag(
     tags: string[],
     paginationOptions: PaginationInput,
+    and = true,
   ): Promise<ResourceList<Article>> {
     const allTags = tags.map(tag => ({
       tags: { $regex: new RegExp('^' + tag.toLowerCase(), 'i') },
     }));
+
+    const andOperator = and ? '$and' : '$or';
     return await index({
       model: this.model,
       paginationOptions,
-      where: { $and: allTags, isPublished: true },
+      where: { [andOperator]: allTags, isPublished: true },
     });
   }
 

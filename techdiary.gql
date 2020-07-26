@@ -160,7 +160,7 @@ type Query {
   admins(pagination: PaginationInput): AdminPayload!
   articles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
-  articlesByTag(pagination: PaginationInput, tags: [String!]!): ArticlePagination!
+  articlesByTag(pagination: PaginationInput, and: Boolean, tags: [String!]!): ArticlePagination!
   sessions(pagination: PaginationInput): SessionPagination!
   me: User
   profile(username: String!): User!
