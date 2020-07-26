@@ -62,4 +62,17 @@ export class InteractionService {
       paginationOptions: pagination,
     });
   }
+  async interactionStatesByUser(
+    type: INTERACTION_TYPE,
+    resource: INTERACTION_RESOURCE,
+    user: Types.ObjectId,
+    pagination: PaginationInput,
+  ): Promise<ResourceList<InterAction>> {
+    // this.model.aggregate
+    return index({
+      model: this.model,
+      where: { resource, type, user },
+      paginationOptions: pagination,
+    });
+  }
 }

@@ -48,7 +48,7 @@ export class InteractionResolver {
     );
   }
   @Query(() => InteractionPagination)
-  async myBookmarks(
+  async articleBookMarks(
     @Args('articleId', { type: () => ID }) articleId: string,
     @Args('pagination', { nullable: true }) pagination: PaginationInput,
   ): Promise<ResourceList<InterAction>> {
@@ -59,6 +59,21 @@ export class InteractionResolver {
       pagination,
     );
   }
+
+  // @Auth()
+  // @Query(() => InteractionPagination)
+  // async myBookmarks(
+  //   @Args('pagination', { nullable: true }) pagination: PaginationInput,
+  //   @Context() ctx: AppContext,
+  // ): Promise<ResourceList<InterAction>> {
+  //   return this.interactionService.interactionStatesByUser(
+  //     INTERACTION_TYPE.BOOKMARK,
+  //     INTERACTION_RESOURCE.ARTICLE,
+  //     ctx.req.user.sub,
+  //     pagination,
+  //   );
+  // }
+
   @Auth()
   @Mutation(() => Boolean)
   async toggleLike(

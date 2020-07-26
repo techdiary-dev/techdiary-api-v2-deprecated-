@@ -23,7 +23,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "studio": "apollo service:push --localSchemaFile=./techdiary.gql --key=service:techdiary:FRxL1ycy7EsNxmj4n6CkwA"
+    "studio": "pnpx apollo service:push --localSchemaFile=./techdiary.gql --key=service:techdiary:FRxL1ycy7EsNxmj4n6CkwA"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",

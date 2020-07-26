@@ -165,7 +165,7 @@ type Query {
   me: User
   profile(username: String!): User!
   articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
-  myBookmarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
+  articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
 }
 
 input idOrSlugArg {
