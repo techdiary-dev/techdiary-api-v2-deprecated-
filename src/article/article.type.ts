@@ -53,6 +53,10 @@ export class Article {
   isPinned?: boolean;
 
   @Field({ nullable: true })
+  @prop({ default: false })
+  isFeatured?: boolean;
+
+  @Field({ nullable: true })
   @prop()
   thumbnail?: string;
 

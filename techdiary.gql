@@ -27,6 +27,7 @@ type Article {
   body: String!
   isPublished: Boolean!
   isPinned: Boolean
+  isFeatured: Boolean
   thumbnail: String
   tags: [String!]
   author: User
@@ -187,6 +188,7 @@ type Query {
   articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   myBookmarks(pagination: PaginationInput): [Bookmark!]!
+  myLikes(pagination: PaginationInput): [Bookmark!]!
   getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
 }
 
@@ -265,6 +267,8 @@ input updateArticleInput {
   thumbnail: String
   isPublished: Boolean
   seriesName: String
+  isFeatured: Boolean
+  isPinned: Boolean
 }
 
 input LoginDTO {
@@ -285,7 +289,7 @@ input BookmarkInput {
 input CreateCommentInput {
   body: String!
   parent: ID
-  article: ID
+  article: ID!
 }
 
 input UpdateCommentInput {

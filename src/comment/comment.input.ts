@@ -10,7 +10,7 @@ export class CreateCommentInput {
   @Field(() => ID, { nullable: true })
   parent?: Types.ObjectId;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => ID)
   @IsNotEmpty({ message: 'An articleId is required.' })
   article: Types.ObjectId;
 }

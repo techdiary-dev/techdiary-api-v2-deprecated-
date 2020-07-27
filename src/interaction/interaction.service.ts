@@ -114,7 +114,7 @@ export class InteractionService {
       {
         $set: {
           [`${resourceLowerCase}.author`]: {
-            $arrayElemAt: [`${resourceLowerCase}.author`, 0],
+            $arrayElemAt: [`$${resourceLowerCase}.author`, 0],
           },
         },
       },
