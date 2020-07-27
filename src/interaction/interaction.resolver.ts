@@ -74,6 +74,20 @@ export class InteractionResolver {
   }
 
   @Auth()
+  @Query(() => [Bookmark])
+  async myLikes(
+    @Args('pagination', { nullable: true }) pagination: PaginationInput,
+    @Context() ctx: AppContext,
+  ) {
+    return this.interactionService.interactionStatesByUser(
+      INTERACTION_TYPE.LIKE,
+      INTERACTION_RESOURCE.ARTICLE,
+      ctx.req.user.sub,
+      pagination,
+    );
+  }
+
+  @Auth()
   @Mutation(() => Boolean)
   async toggleLike(
     @Args('data') data: LikeInput,
