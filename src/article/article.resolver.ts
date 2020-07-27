@@ -39,6 +39,15 @@ export class ArticleResolver {
     return this.articleService.getPublishedArticles(paginationOptions);
   }
 
+  @Query(() => ArticlePagination)
+  async featuredArticles(
+    @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return this.articleService.getPublishedArticles(paginationOptions, {
+      isFeatured: true,
+    });
+  }
+
   @Query(() => Article)
   async article(
     @Args('idOrSlug') idOrSlug: idOrSlugArg,
