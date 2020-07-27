@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 import {
   prop,
@@ -75,14 +75,11 @@ export class Article {
   seriesName?: string;
 
   @Field(() => [Article], { nullable: true })
-  // @prop({
-  //   ref: 'Article',
-  //   foreignField: 'seriesName',
-  //   localField: 'seriesName',
-  //   autopopulate: true,
-  // })
   series?: Article[];
 
   @Field()
   url?: string;
+
+  @Field(() => Int)
+  timeToRead?: number;
 }

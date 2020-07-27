@@ -35,6 +35,7 @@ type Article {
   seriesName: String
   series: [Article!]
   url: String!
+  timeToRead: Int!
 }
 
 type ArticlePayload {

@@ -9,6 +9,7 @@ import {
   ID,
   ObjectType,
 } from '@nestjs/graphql';
+import * as readingTime from 'reading-time';
 import { Article } from './article.type';
 import {
   idOrSlugArg,
@@ -113,5 +114,10 @@ export class ArticleResolver {
   @ResolveField()
   series(@Parent() parent: Article): Promise<DocumentType<Article>[]> {
     return this.articleService.findSeriesArticles(parent);
+  }
+
+  @ResolveField()
+  timeToRead(@Parent() parent: Article): number {
+    return Math.ceil(readingTime(parent.body).minutes);
   }
 }
