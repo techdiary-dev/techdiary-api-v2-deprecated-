@@ -43,3 +43,9 @@ export class InterAction {
   @Field()
   updatedAt?: string;
 }
+
+@ObjectType()
+export class Bookmark extends InterAction {
+  @Field(() => Article)
+  article: Article;
+}

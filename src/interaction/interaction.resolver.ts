@@ -11,6 +11,7 @@ import {
   InterAction,
   INTERACTION_TYPE,
   INTERACTION_RESOURCE,
+  Bookmark,
 } from './interaction.type';
 import { InteractionService } from './interaction.service';
 import {
@@ -24,14 +25,12 @@ import AppContext, {
   PaginationInput,
   Pagination,
 } from 'src/shared/types';
-import { types } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
-import { User } from 'src/users/users.type';
 
 @ObjectType()
 class InteractionPagination extends Pagination(InterAction) {}
 
-@Resolver('Interaction')
+@Resolver(() => InterAction)
 export class InteractionResolver {
   constructor(private readonly interactionService: InteractionService) {}
 
@@ -60,19 +59,19 @@ export class InteractionResolver {
     );
   }
 
-  // @Auth()
-  // @Query(() => InteractionPagination)
-  // async myBookmarks(
-  //   @Args('pagination', { nullable: true }) pagination: PaginationInput,
-  //   @Context() ctx: AppContext,
-  // ): Promise<ResourceList<InterAction>> {
-  //   return this.interactionService.interactionStatesByUser(
-  //     INTERACTION_TYPE.BOOKMARK,
-  //     INTERACTION_RESOURCE.ARTICLE,
-  //     ctx.req.user.sub,
-  //     pagination,
-  //   );
-  // }
+  @Auth()
+  @Query(() => [Bookmark])
+  async myBookmarks(
+    @Args('pagination', { nullable: true }) pagination: PaginationInput,
+    @Context() ctx: AppContext,
+  ) {
+    return this.interactionService.interactionStatesByUser(
+      INTERACTION_TYPE.BOOKMARK,
+      INTERACTION_RESOURCE.ARTICLE,
+      ctx.req.user.sub,
+      pagination,
+    );
+  }
 
   @Auth()
   @Mutation(() => Boolean)

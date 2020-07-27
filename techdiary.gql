@@ -127,6 +127,17 @@ type InterAction {
   updatedAt: String!
 }
 
+type Bookmark {
+  _id: ID!
+  user: User!
+  resource: String!
+  resourceId: ID!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+  article: Article!
+}
+
 type InteractionPagination {
   currentPage: Float!
   pageCount: Float!
@@ -174,6 +185,7 @@ type Query {
   profile(username: String!): User!
   articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
+  myBookmarks(pagination: PaginationInput): [Bookmark!]!
   getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
 }
 
