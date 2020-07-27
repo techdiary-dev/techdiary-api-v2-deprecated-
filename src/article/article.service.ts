@@ -17,7 +17,7 @@ import {
 } from './article.input';
 import { PaginationInput, ResourceList } from 'src/shared/types';
 import { index } from 'quick-crud';
-import { Types } from 'mongoose';
+import { Types, MongooseFilterQuery } from 'mongoose';
 import { AUTH_DOMAIN } from 'src/session/session.type';
 
 @Injectable()
@@ -96,11 +96,12 @@ export class ArticleService {
 
   async getPublishedArticles(
     paginationOptions: PaginationInput,
+    where?: MongooseFilterQuery<DocumentType<Article>>,
   ): Promise<ResourceList<Article>> {
     return await index({
       model: this.model,
       paginationOptions,
-      where: { isPublished: true },
+      where: { isPublished: true, ...where },
     });
   }
 
