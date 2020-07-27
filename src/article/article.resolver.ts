@@ -48,6 +48,15 @@ export class ArticleResolver {
     });
   }
 
+  @Query(() => ArticlePagination)
+  async pinnedArticles(
+    @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return this.articleService.getPublishedArticles(paginationOptions, {
+      isPinned: true,
+    });
+  }
+
   @Query(() => Article)
   async article(
     @Args('idOrSlug') idOrSlug: idOrSlugArg,
