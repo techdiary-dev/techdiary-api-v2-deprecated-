@@ -37,6 +37,7 @@ type Article {
   series: [Article!]
   url: String!
   timeToRead: Int!
+  commentCount: Int!
 }
 
 type ArticlePayload {
@@ -95,11 +96,29 @@ type UserPayload {
   data: [User!]!
 }
 
+type Comment {
+  _id: ID!
+  body: String!
+  author: User!
+  parent: ID
+  article: ID!
+  comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
+}
+
 type ArticlePagination {
   currentPage: Float!
   pageCount: Float!
   resourceCount: Float!
   data: [Article!]!
+}
+
+type PaginateComment {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [Comment!]!
 }
 
 type SessionPagination {
@@ -147,24 +166,6 @@ type InteractionPagination {
   data: [InterAction!]!
 }
 
-type Comment {
-  _id: ID!
-  body: String!
-  author: User!
-  parent: ID
-  article: ID!
-  comments: [Comment!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-type PaginateComment {
-  currentPage: Float!
-  pageCount: Float!
-  resourceCount: Float!
-  data: [Comment!]!
-}
-
 input LinkInput {
   text: String!
   link: String!
@@ -186,6 +187,7 @@ type Query {
   pinnedArticles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
   articlesByTag(pagination: PaginationInput, and: Boolean, tags: [String!]!): ArticlePagination!
+  getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
   sessions(pagination: PaginationInput): SessionPagination!
   me: User
   profile(username: String!): User!
@@ -193,7 +195,6 @@ type Query {
   articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   myBookmarks(pagination: PaginationInput): [Bookmark!]!
   myLikes(pagination: PaginationInput): [Bookmark!]!
-  getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
 }
 
 input idOrSlugArg {
@@ -209,6 +210,9 @@ type Mutation {
   createArticle(data: CreateArticleInput!): Article!
   updateArticle(data: updateArticleInput, _id: ID!): Article!
   deleteArticle(_id: ID!): Article!
+  createComment(data: CreateCommentInput!): Comment!
+  updateComment(data: UpdateCommentInput!, _id: ID!): Comment!
+  deleteComment(_id: ID!): Comment!
   removeSession(domain: String!, sub: String!): String!
   registerAdmin(data: CreateAdminInput!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
@@ -218,9 +222,6 @@ type Mutation {
   updateProfile(data: UpdateUserInput!): User!
   toggleLike(data: LikeInput!): Boolean!
   toggleBookmark(data: BookmarkInput!): Boolean!
-  createComment(data: CreateCommentInput!): Comment!
-  updateComment(data: UpdateCommentInput!, _id: ID!): Comment!
-  deleteComment(_id: ID!): Comment!
 }
 
 input UpdatePassword {
@@ -275,6 +276,18 @@ input updateArticleInput {
   isPinned: Boolean
 }
 
+input CreateCommentInput {
+  body: String!
+  parent: ID
+  article: ID!
+}
+
+input UpdateCommentInput {
+  body: String
+  parent: ID
+  article: ID
+}
+
 input LoginDTO {
   identifier: String!
   password: String!
@@ -288,16 +301,4 @@ input LikeInput {
 input BookmarkInput {
   articleId: ID!
   isBookmarked: Boolean!
-}
-
-input CreateCommentInput {
-  body: String!
-  parent: ID
-  article: ID!
-}
-
-input UpdateCommentInput {
-  body: String
-  parent: ID
-  article: ID
 }
