@@ -64,4 +64,10 @@ export class CommentService {
     await this.model.deleteMany({ parent: _id });
     return this.model.findByIdAndDelete({ _id });
   }
+
+  async getCommentsCountByArticleId(
+    articleId: Types.ObjectId,
+  ): Promise<number> {
+    return this.model.find({ article: articleId }).countDocuments();
+  }
 }

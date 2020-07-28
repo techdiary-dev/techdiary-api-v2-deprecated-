@@ -86,4 +86,8 @@ export class Article {
 
   @Field(() => Int)
   timeToRead?: number;
+
+
+  @Field(() => Int)
+  commentCount?: number;
 }

@@ -25,12 +25,16 @@ import { ArticleService } from './article.service';
 import { DocumentType, isDocument } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { Auth } from 'src/auth/decorators/auth.decorator';
+import { CommentService } from 'src/comment/comment.service';
 
 @ObjectType()
 class ArticlePagination extends Pagination(Article) {}
 @Resolver(() => Article)
 export class ArticleResolver {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(
+    private readonly articleService: ArticleService,
+    private readonly commentService: CommentService,
+  ) {}
 
   @Query(() => ArticlePagination)
   async articles(
@@ -115,6 +119,11 @@ export class ArticleResolver {
     return `/${isDocument(parent.author) && parent.author.username}/${
       parent.slug
     }`;
+  }
+
+  @ResolveField()
+  async commentCount(@Parent() parent: Article): Promise<number> {
+    return this.commentService.getCommentsCountByArticleId(parent._id);
   }
 
   @ResolveField()
