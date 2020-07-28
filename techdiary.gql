@@ -154,6 +154,8 @@ type Comment {
   parent: ID
   article: ID!
   comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
 }
 
 type PaginateComment {
@@ -181,6 +183,7 @@ type Query {
   admins(pagination: PaginationInput): AdminPayload!
   articles(pagination: PaginationInput): ArticlePagination!
   featuredArticles(pagination: PaginationInput): ArticlePagination!
+  pinnedArticles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
   articlesByTag(pagination: PaginationInput, and: Boolean, tags: [String!]!): ArticlePagination!
   sessions(pagination: PaginationInput): SessionPagination!
