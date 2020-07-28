@@ -42,4 +42,10 @@ export class Comment {
     autopopulate: true,
   })
   comments?: Ref<Comment>[];
+
+  @Field()
+  createdAt?: string;
+
+  @Field()
+  updatedAt?: string;
 }
