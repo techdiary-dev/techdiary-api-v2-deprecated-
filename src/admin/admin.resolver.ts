@@ -8,6 +8,7 @@ import {
   UpdatePasswordArgs,
   CreateAdminInput,
   UpdateAdminArgs,
+  AdminPayload,
 } from './admin.input';
 import { UserPayload } from 'src/users/users.input';
 import { User } from 'src/users/users.type';
@@ -51,7 +52,15 @@ export class AdminResolver {
     @Context('req') req: SessionRequest,
     @Args() { data }: UpdateAdminArgs,
   ): Promise<Admin> {
-    console.log(data);
     return this.adminService.update(req.user.sub, data);
+  }
+
+  @Auth(AUTH_DOMAIN.ADMIN)
+  @Query(() => AdminPayload)
+  async admins(
+    @Context('req') req: SessionRequest,
+    @Args('pagination', { nullable: true }) query: PaginationInput,
+  ): Promise<ResourceList<Admin>> {
+    return this.adminService.admins(req.user.sub, query);
   }
 }

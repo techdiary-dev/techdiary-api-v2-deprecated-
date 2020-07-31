@@ -1,6 +1,6 @@
 {
   "name": "techdiary-api",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Techdiary backend api",
   "author": {
     "name": "GraphLand team",
@@ -22,7 +22,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "studio": "pnpx apollo service:push --localSchemaFile=./techdiary.gql --key=service:techdiary:FRxL1ycy7EsNxmj4n6CkwA"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
@@ -52,6 +53,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "quick-crud": "^0.2.1",
+    "reading-time": "^1.2.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
@@ -67,6 +69,7 @@
     "@types/jest": "25.2.3",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.7.28",
+    "@types/mongoose-autopopulate": "^0.10.1",
     "@types/node": "^13.9.1",
     "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.8",

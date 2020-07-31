@@ -15,6 +15,9 @@ import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
 import { UsersModule } from './users/users.module';
 import { ArticleModule } from './article/article.module';
+import { InteractionModule } from './interaction/interaction.module';
+import { CommentModule } from './comment/comment.module';
+import { PagesModule } from './pages/pages.module';
 
 const config: ConfigService = new ConfigService();
 
@@ -24,13 +27,13 @@ const config: ConfigService = new ConfigService();
       installSubscriptionHandlers: true,
       autoSchemaFile: 'techdiary.gql',
       path: '/',
-      context: allre => {
-        return { req: allre.req, res: allre.res };
-      },
+      context: ({ req, res }) => ({ req, res }),
       engine: {
         reportSchema: true,
       },
       cors: false,
+      playground: config.get<boolean>('GQL_PLAYGROUND'),
+      introspection: config.get<boolean>('GQL_PLAYGROUND'),
     }),
     //-------------
     ConfigModule.forRoot({ isGlobal: true }),
@@ -50,6 +53,9 @@ const config: ConfigService = new ConfigService();
     RoleModule,
     UsersModule,
     ArticleModule,
+    InteractionModule,
+    CommentModule,
+    PagesModule,
   ],
 })
 export class AppModule {}

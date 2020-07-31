@@ -27,14 +27,17 @@ type Article {
   body: String!
   isPublished: Boolean!
   isPinned: Boolean
+  isFeatured: Boolean
   thumbnail: String
   tags: [String!]
   author: User
   createdAt: String!
   updatedAt: String!
-  series: [Article!]
   seriesName: String
+  series: [Article!]
   url: String!
+  timeToRead: Int!
+  commentCount: Int!
 }
 
 type ArticlePayload {
@@ -79,6 +82,13 @@ input PaginationInput {
   page: Int
 }
 
+type AdminPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Admin!]!
+}
+
 type UserPayload {
   resourceCount: Int!
   pageCount: Int!
@@ -86,10 +96,35 @@ type UserPayload {
   data: [User!]!
 }
 
-type SessionPayload {
-  resourceCount: Int!
-  pageCount: Int!
-  currentPage: Int!
+type Comment {
+  _id: ID!
+  body: String!
+  author: User!
+  parent: ID
+  article: ID!
+  comments: [Comment!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type ArticlePagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [Article!]!
+}
+
+type PaginateComment {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [Comment!]!
+}
+
+type SessionPagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
   data: [Session!]!
 }
 
@@ -101,6 +136,34 @@ type AuthPayload {
 enum AUTH_DOMAIN {
   ADMIN
   USER
+}
+
+type InterAction {
+  _id: ID!
+  user: User!
+  resource: String!
+  resourceId: ID!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Bookmark {
+  _id: ID!
+  user: User!
+  resource: String!
+  resourceId: ID!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+  article: Article!
+}
+
+type InteractionPagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [InterAction!]!
 }
 
 input LinkInput {
@@ -118,12 +181,20 @@ input WorkInfoInput {
 type Query {
   getAllUsers(pagination: PaginationInput): UserPayload!
   getAdmin: Admin
-  articles(pagination: PaginationInput): ArticlePayload!
+  admins(pagination: PaginationInput): AdminPayload!
+  articles(pagination: PaginationInput): ArticlePagination!
+  featuredArticles(pagination: PaginationInput): ArticlePagination!
+  pinnedArticles(pagination: PaginationInput): ArticlePagination!
   article(idOrSlug: idOrSlugArg!): Article!
-  articlesByTag(pagination: PaginationInput, tag: String!): ArticlePayload!
-  sessions(pagination: PaginationInput): SessionPayload!
+  articlesByTag(pagination: PaginationInput, and: Boolean, tags: [String!]!): ArticlePagination!
+  getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
+  sessions(pagination: PaginationInput): SessionPagination!
   me: User
   profile(username: String!): User!
+  articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
+  articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
+  myBookmarks(pagination: PaginationInput): [Bookmark!]!
+  myLikes(pagination: PaginationInput): [Bookmark!]!
 }
 
 input idOrSlugArg {
@@ -135,9 +206,13 @@ type Mutation {
   changePassword(data: UpdatePassword!): String!
   addAdmin(data: CreateAdminInput!): Admin!
   updateAdmin(data: UpdateAdminInput): Admin!
+  updateUserByAdmin(userId: ID!, data: UpdateUserInput): User!
   createArticle(data: CreateArticleInput!): Article!
   updateArticle(data: updateArticleInput, _id: ID!): Article!
   deleteArticle(_id: ID!): Article!
+  createComment(data: CreateCommentInput!): Comment!
+  updateComment(data: UpdateCommentInput!, _id: ID!): Comment!
+  deleteComment(_id: ID!): Comment!
   removeSession(domain: String!, sub: String!): String!
   registerAdmin(data: CreateAdminInput!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
@@ -145,6 +220,8 @@ type Mutation {
   login(oAuthCode: String!): AuthPayload!
   logout: String!
   updateProfile(data: UpdateUserInput!): User!
+  toggleLike(data: LikeInput!): Boolean!
+  toggleBookmark(data: BookmarkInput!): Boolean!
 }
 
 input UpdatePassword {
@@ -165,6 +242,20 @@ input UpdateAdminInput {
   email: String
 }
 
+input UpdateUserInput {
+  name: String
+  username: String
+  email: String
+  profilePhoto: String
+  education: String
+  designation: String
+  location: String
+  bio: String
+  links: [LinkInput!]
+  skills: [String!]
+  workInfo: [WorkInfoInput!]
+}
+
 input CreateArticleInput {
   title: String
   body: String
@@ -181,6 +272,20 @@ input updateArticleInput {
   thumbnail: String
   isPublished: Boolean
   seriesName: String
+  isFeatured: Boolean
+  isPinned: Boolean
+}
+
+input CreateCommentInput {
+  body: String!
+  parent: ID
+  article: ID!
+}
+
+input UpdateCommentInput {
+  body: String
+  parent: ID
+  article: ID
 }
 
 input LoginDTO {
@@ -188,16 +293,12 @@ input LoginDTO {
   password: String!
 }
 
-input UpdateUserInput {
-  name: String
-  username: String
-  email: String
-  profilePhoto: String
-  education: String
-  designation: String
-  location: String
-  bio: String
-  links: [LinkInput!]
-  skills: [String!]
-  workInfo: [WorkInfoInput!]
+input LikeInput {
+  articleId: ID!
+  isLiked: Boolean!
+}
+
+input BookmarkInput {
+  articleId: ID!
+  isBookmarked: Boolean!
 }

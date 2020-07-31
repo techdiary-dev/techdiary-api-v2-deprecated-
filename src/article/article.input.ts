@@ -84,6 +84,12 @@ export class updateArticleInput {
 
   @Field(() => String, { nullable: true })
   seriesName?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isFeatured?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isPinned?: boolean;
 }
 
 @ArgsType()

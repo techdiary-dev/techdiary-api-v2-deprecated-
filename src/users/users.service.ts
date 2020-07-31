@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { User } from './users.type';
@@ -10,6 +10,7 @@ import { index } from 'quick-crud';
 // import { RoleService } from 'src/role/role.service';
 import { UpdateUserInput } from './users.input';
 import { PaginationInput, ResourceList } from 'src/shared/types';
+import { AUTH_DOMAIN } from 'src/session/session.type';
 
 @Injectable()
 export class UsersService {
@@ -55,7 +56,8 @@ export class UsersService {
     _id: Types.ObjectId,
     data: UpdateUserInput,
   ): Promise<DocumentType<User>> {
-    console.log('userserviceUpdate', data);
+    const user = await this.getById(_id);
+    if (!user) throw new NotFoundException('User id invalid');
     return this.model.findOneAndUpdate({ _id }, data, { new: true });
   }
   async getByGithubUID(code: string): Promise<DocumentType<User>> {

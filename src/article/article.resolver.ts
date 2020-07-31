@@ -7,29 +7,58 @@ import {
   ResolveField,
   Parent,
   ID,
+  ObjectType,
 } from '@nestjs/graphql';
+import * as readingTime from 'reading-time';
 import { Article } from './article.type';
 import {
-  ArticlePayload,
   idOrSlugArg,
   CreateArticleInput,
   updateArticleArgs,
 } from './article.input';
-import AppContext, { PaginationInput, ResourceList } from 'src/shared/types';
+import AppContext, {
+  PaginationInput,
+  ResourceList,
+  Pagination,
+} from 'src/shared/types';
 import { ArticleService } from './article.service';
-import { DocumentType } from '@typegoose/typegoose';
+import { DocumentType, isDocument } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { Auth } from 'src/auth/decorators/auth.decorator';
+import { CommentService } from 'src/comment/comment.service';
 
+@ObjectType()
+class ArticlePagination extends Pagination(Article) {}
 @Resolver(() => Article)
 export class ArticleResolver {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(
+    private readonly articleService: ArticleService,
+    private readonly commentService: CommentService,
+  ) {}
 
-  @Query(() => ArticlePayload)
+  @Query(() => ArticlePagination)
   async articles(
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
   ): Promise<ResourceList<Article>> {
     return this.articleService.getPublishedArticles(paginationOptions);
+  }
+
+  @Query(() => ArticlePagination)
+  async featuredArticles(
+    @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return this.articleService.getPublishedArticles(paginationOptions, {
+      isFeatured: true,
+    });
+  }
+
+  @Query(() => ArticlePagination)
+  async pinnedArticles(
+    @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
+  ): Promise<ResourceList<Article>> {
+    return this.articleService.getPublishedArticles(paginationOptions, {
+      isPinned: true,
+    });
   }
 
   @Query(() => Article)
@@ -40,16 +69,17 @@ export class ArticleResolver {
     return article;
   }
 
-  @Query(() => ArticlePayload)
+  @Query(() => ArticlePagination)
   async articlesByTag(
-    @Args('tag') tag: string,
+    @Args('tags', { type: () => [String] }) tags: string[],
+    @Args('and', { type: () => Boolean, nullable: true }) and: boolean,
     @Args('pagination', { nullable: true }) paginationOptions: PaginationInput,
-  ) {
-    return this.articleService.ArticlesByTag(tag, paginationOptions);
+  ): Promise<ResourceList<Article>> {
+    return this.articleService.ArticlesByTag(tags, paginationOptions, and);
   }
 
-  @Mutation(() => Article)
   @Auth()
+  @Mutation(() => Article)
   createArticle(
     @Args('data') data: CreateArticleInput,
     @Context() ctx: AppContext,
@@ -86,8 +116,14 @@ export class ArticleResolver {
 
   @ResolveField()
   url(@Parent() parent: Article): string {
-    // @ts-ignore
-    return `/${parent.author?.username}/${parent.slug}`;
+    return `/${isDocument(parent.author) && parent.author.username}/${
+      parent.slug
+    }`;
+  }
+
+  @ResolveField()
+  async commentCount(@Parent() parent: Article): Promise<number> {
+    return this.commentService.getCommentsCountByArticleId(parent._id);
   }
 
   @ResolveField()
@@ -105,5 +141,10 @@ export class ArticleResolver {
   @ResolveField()
   series(@Parent() parent: Article): Promise<DocumentType<Article>[]> {
     return this.articleService.findSeriesArticles(parent);
+  }
+
+  @ResolveField()
+  timeToRead(@Parent() parent: Article): number {
+    return Math.ceil(readingTime(parent.body).minutes);
   }
 }
