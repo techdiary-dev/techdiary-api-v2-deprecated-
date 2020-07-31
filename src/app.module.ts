@@ -17,6 +17,7 @@ import { UsersModule } from './users/users.module';
 import { ArticleModule } from './article/article.module';
 import { InteractionModule } from './interaction/interaction.module';
 import { CommentModule } from './comment/comment.module';
+import { PagesModule } from './pages/pages.module';
 
 const config: ConfigService = new ConfigService();
 
@@ -54,6 +55,7 @@ const config: ConfigService = new ConfigService();
     ArticleModule,
     InteractionModule,
     CommentModule,
+    PagesModule,
   ],
 })
 export class AppModule {}
