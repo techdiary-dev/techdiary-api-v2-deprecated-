@@ -19,6 +19,27 @@ type Session {
   updatedAt: String!
 }
 
+type InterAction {
+  _id: ID!
+  user: User!
+  resource: String!
+  resourceId: ID!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Bookmark {
+  _id: ID!
+  user: User!
+  resource: String!
+  resourceId: ID!
+  type: String!
+  createdAt: String!
+  updatedAt: String!
+  article: Article!
+}
+
 type Article {
   _id: ID!
   title: String!
@@ -38,6 +59,10 @@ type Article {
   url: String!
   timeToRead: Int!
   commentCount: Int!
+  isLiked: Boolean!
+  isBookmarked: Boolean!
+  likeCount: Int!
+  bookmarkCount: Int!
 }
 
 type ArticlePayload {
@@ -121,6 +146,13 @@ type PaginateComment {
   data: [Comment!]!
 }
 
+type InteractionPagination {
+  currentPage: Float!
+  pageCount: Float!
+  resourceCount: Float!
+  data: [InterAction!]!
+}
+
 type SessionPagination {
   currentPage: Float!
   pageCount: Float!
@@ -136,34 +168,6 @@ type AuthPayload {
 enum AUTH_DOMAIN {
   ADMIN
   USER
-}
-
-type InterAction {
-  _id: ID!
-  user: User!
-  resource: String!
-  resourceId: ID!
-  type: String!
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Bookmark {
-  _id: ID!
-  user: User!
-  resource: String!
-  resourceId: ID!
-  type: String!
-  createdAt: String!
-  updatedAt: String!
-  article: Article!
-}
-
-type InteractionPagination {
-  currentPage: Float!
-  pageCount: Float!
-  resourceCount: Float!
-  data: [InterAction!]!
 }
 
 input LinkInput {
@@ -188,13 +192,13 @@ type Query {
   article(idOrSlug: idOrSlugArg!): Article!
   articlesByTag(pagination: PaginationInput, and: Boolean, tags: [String!]!): ArticlePagination!
   getCommentsByArticle(pagination: PaginationInput, articleId: ID!): PaginateComment!
-  sessions(pagination: PaginationInput): SessionPagination!
-  me: User
-  profile(username: String!): User!
   articleLikers(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   articleBookMarks(pagination: PaginationInput, articleId: ID!): InteractionPagination!
   myBookmarks(pagination: PaginationInput): [Bookmark!]!
   myLikes(pagination: PaginationInput): [Bookmark!]!
+  sessions(pagination: PaginationInput): SessionPagination!
+  me: User
+  profile(username: String!): User!
 }
 
 input idOrSlugArg {
@@ -213,6 +217,8 @@ type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   updateComment(data: UpdateCommentInput!, _id: ID!): Comment!
   deleteComment(_id: ID!): Comment!
+  toggleLike(data: LikeInput!): Boolean!
+  toggleBookmark(data: BookmarkInput!): Boolean!
   removeSession(domain: String!, sub: String!): String!
   registerAdmin(data: CreateAdminInput!): Admin!
   loginAdmin(data: LoginDTO!): AuthPayload!
@@ -220,8 +226,6 @@ type Mutation {
   login(oAuthCode: String!): AuthPayload!
   logout: String!
   updateProfile(data: UpdateUserInput!): User!
-  toggleLike(data: LikeInput!): Boolean!
-  toggleBookmark(data: BookmarkInput!): Boolean!
 }
 
 input UpdatePassword {
@@ -288,11 +292,6 @@ input UpdateCommentInput {
   article: ID
 }
 
-input LoginDTO {
-  identifier: String!
-  password: String!
-}
-
 input LikeInput {
   articleId: ID!
   isLiked: Boolean!
@@ -301,4 +300,9 @@ input LikeInput {
 input BookmarkInput {
   articleId: ID!
   isBookmarked: Boolean!
+}
+
+input LoginDTO {
+  identifier: String!
+  password: String!
 }
