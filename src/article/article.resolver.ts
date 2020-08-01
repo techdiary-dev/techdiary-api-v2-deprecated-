@@ -161,7 +161,7 @@ export class ArticleResolver {
   async isLiked(@Parent() parent: Article, @Context() ctx: AppContext) {
     const jsonWebToken =
       ctx.req.cookies?.token ||
-      ctx.req.headers.authorization.replace('Bearer ', '');
+      ctx.req.headers?.authorization.replace('Bearer ', '');
     let token: JWTPayload;
     try {
       token = await this.jwt.verifyAsync(jsonWebToken);
@@ -182,7 +182,7 @@ export class ArticleResolver {
   async isBookmarked(@Parent() parent: Article, @Context() ctx: AppContext) {
     const jsonWebToken =
       ctx.req.cookies?.token ||
-      ctx.req.headers.authorization.replace('Bearer ', '');
+      ctx.req.headers?.authorization.replace('Bearer ', '');
     let token: JWTPayload;
     try {
       token = await this.jwt.verifyAsync(jsonWebToken);
