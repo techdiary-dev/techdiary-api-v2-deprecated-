@@ -11,6 +11,7 @@ import {
 import { User } from 'src/users/users.type';
 import * as mongoosePopulate from 'mongoose-autopopulate';
 import { slugify } from 'src/utils/slugify';
+import { InterAction } from 'src/interaction/interaction.type';
 
 @ObjectType()
 @modelOptions({
@@ -87,7 +88,18 @@ export class Article {
   @Field(() => Int)
   timeToRead?: number;
 
-
   @Field(() => Int)
   commentCount?: number;
+
+  @Field({ defaultValue: false })
+  isLiked?: boolean;
+
+  @Field({ defaultValue: false })
+  isBookmarked?: boolean;
+
+  @Field(() => Int, { defaultValue: 0 })
+  likeCount?: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  bookmarkCount?: number;
 }

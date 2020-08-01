@@ -62,6 +62,21 @@ export class InteractionService {
       paginationOptions: pagination,
     });
   }
+  async interActionCount(
+    type: INTERACTION_TYPE,
+    resource: INTERACTION_RESOURCE,
+    resourceId: Types.ObjectId,
+  ) {
+    return this.model.find({ type, resource, resourceId }).countDocuments();
+  }
+  async isInteacted(
+    type: INTERACTION_TYPE,
+    resource: INTERACTION_RESOURCE,
+    resourceId: Types.ObjectId,
+    userId?: Types.ObjectId,
+  ) {
+    return this.model.findOne({ type, resource, resourceId, user: userId });
+  }
   convertSortStringToObject(sort = '-createdAt') {
     const newSortObject = sort
       .split(' ')

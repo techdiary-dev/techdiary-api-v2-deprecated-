@@ -26,6 +26,13 @@ import { DocumentType, isDocument } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { CommentService } from 'src/comment/comment.service';
+import { InteractionService } from 'src/interaction/interaction.service';
+import {
+  INTERACTION_TYPE,
+  INTERACTION_RESOURCE,
+} from 'src/interaction/interaction.type';
+import { JwtService } from '@nestjs/jwt';
+import { JWTPayload } from 'src/session/session.type';
 
 @ObjectType()
 class ArticlePagination extends Pagination(Article) {}
@@ -34,6 +41,8 @@ export class ArticleResolver {
   constructor(
     private readonly articleService: ArticleService,
     private readonly commentService: CommentService,
+    private readonly interactionService: InteractionService,
+    private readonly jwt: JwtService,
   ) {}
 
   @Query(() => ArticlePagination)
@@ -146,5 +155,64 @@ export class ArticleResolver {
   @ResolveField()
   timeToRead(@Parent() parent: Article): number {
     return Math.ceil(readingTime(parent.body).minutes);
+  }
+
+  @ResolveField()
+  async isLiked(@Parent() parent: Article, @Context() ctx: AppContext) {
+    const jsonWebToken =
+      ctx.req.cookies?.token ||
+      ctx.req.headers?.authorization?.replace('Bearer ', '');
+    let token: JWTPayload;
+    try {
+      token = await this.jwt.verifyAsync(jsonWebToken);
+      if (!token) return false;
+    } catch (error) {
+      return false;
+    }
+    const interAction = await this.interactionService.isInteacted(
+      INTERACTION_TYPE.LIKE,
+      INTERACTION_RESOURCE.ARTICLE,
+      parent._id,
+      token.sub,
+    );
+    if (interAction) return true;
+    else return false;
+  }
+  @ResolveField()
+  async isBookmarked(@Parent() parent: Article, @Context() ctx: AppContext) {
+    const jsonWebToken =
+      ctx.req.cookies?.token ||
+      ctx.req.headers?.authorization?.replace('Bearer ', '');
+    let token: JWTPayload;
+    try {
+      token = await this.jwt.verifyAsync(jsonWebToken);
+      if (!token) return false;
+    } catch (error) {
+      return false;
+    }
+    const interAction = await this.interactionService.isInteacted(
+      INTERACTION_TYPE.BOOKMARK,
+      INTERACTION_RESOURCE.ARTICLE,
+      parent._id,
+      token.sub,
+    );
+    if (interAction) return true;
+    else return false;
+  }
+  @ResolveField()
+  async likeCount(@Parent() parent: Article) {
+    return this.interactionService.interActionCount(
+      INTERACTION_TYPE.LIKE,
+      INTERACTION_RESOURCE.ARTICLE,
+      parent._id,
+    );
+  }
+  @ResolveField()
+  async bookmarkCount(@Parent() parent: Article) {
+    return this.interactionService.interActionCount(
+      INTERACTION_TYPE.BOOKMARK,
+      INTERACTION_RESOURCE.ARTICLE,
+      parent._id,
+    );
   }
 }
