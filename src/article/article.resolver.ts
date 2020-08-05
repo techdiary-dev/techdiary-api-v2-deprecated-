@@ -125,9 +125,8 @@ export class ArticleResolver {
 
   @ResolveField()
   url(@Parent() parent: Article): string {
-    return `/${isDocument(parent.author) && parent.author.username}/${
-      parent.slug
-    }`;
+    // @ts-ignore
+    return `/${parent.author.username}/${parent.slug}`;
   }
 
   @ResolveField()
